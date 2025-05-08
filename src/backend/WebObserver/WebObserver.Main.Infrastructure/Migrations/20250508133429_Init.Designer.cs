@@ -14,7 +14,7 @@ using WebObserver.Main.Infrastructure.Data;
 namespace WebObserver.Main.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250508104355_Init")]
+    [Migration("20250508133429_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -198,10 +198,15 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("password");
+                        .HasColumnType("bytea")
+                        .HasColumnName("password_hash");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("password_salt");
 
                     b.HasKey("Id")
                         .HasName("pk_users");

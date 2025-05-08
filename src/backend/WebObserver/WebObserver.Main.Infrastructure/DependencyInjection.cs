@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Infrastructure.Data;
+using WebObserver.Main.Infrastructure.Data.Repositories;
 
 namespace WebObserver.Main.Infrastructure;
 
@@ -20,7 +22,9 @@ public static class DependencyInjection
             b.EnableSensitiveDataLogging();
             b.UseSnakeCaseNamingConvention();
         });
-        
+
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         return services;
     }
