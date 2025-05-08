@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using WebObserver.Main.Application.Features.Observings.Commands.AddObserving.Factories;
 using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Application.Services.Impls;
 
@@ -14,6 +15,10 @@ public static class DependencyInjection
         });
 
         services.AddScoped<ITokenService, TokenService>();
+        
+        services.AddScoped<IObservingFactory, TextObservingFactory>();
+        services.AddScoped<IObservingFactory, YouTubePlaylistObservingFactory>();
+        services.AddScoped<IObservingFactoryResolver, ObservingFactoryResolver>();
         
         return services;
     }

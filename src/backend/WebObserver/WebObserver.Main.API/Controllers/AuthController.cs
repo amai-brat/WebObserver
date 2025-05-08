@@ -29,6 +29,4 @@ public class AuthController(IMediator mediator) : ControllerBase
             ? Ok(result.Value) 
             : BadRequest(result.Errors.ToProblemDetails());
     }
-    
-    
 }

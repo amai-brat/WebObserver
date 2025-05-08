@@ -14,7 +14,7 @@ using WebObserver.Main.Infrastructure.Data;
 namespace WebObserver.Main.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250508133429_Init")]
+    [Migration("20250508181024_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -419,6 +419,14 @@ namespace WebObserver.Main.Infrastructure.Migrations
                     b.ToTable("templates", (string)null);
 
                     b.HasDiscriminator().HasValue("TextObservingTemplate");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            Description = "Отслеживает за текстовым файлом (не бинари)",
+                            Name = "Текстовый файл"
+                        });
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistObservingTemplate", b =>
@@ -428,6 +436,14 @@ namespace WebObserver.Main.Infrastructure.Migrations
                     b.ToTable("templates", (string)null);
 
                     b.HasDiscriminator().HasValue("YouTubePlaylistObservingTemplate");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Отслеживает за изменениями YouTube плейлиста: добавление, удаление, изменение ролика, недоступность ролика",
+                            Name = "YouTube плейлист"
+                        });
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.Text.TextObservingEntry", b =>

@@ -12,9 +12,15 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         return count > 0;
     }
 
-    public async Task<User?> GetUserAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        return user;
+    }
+
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         return user;
     }
 

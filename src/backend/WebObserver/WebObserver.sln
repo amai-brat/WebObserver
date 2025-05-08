@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebObserver.Main.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebObserver.Main.Console", "WebObserver.Main.Console\WebObserver.Main.Console.csproj", "{9DA07D68-BEBA-4FE5-9383-4CFD243C6C30}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{E92C2ABD-041A-4206-A5C8-747E9E8752B3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{E92C2ABD-041A-4206-A5C8-747E9E8752B3}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 		Makefile = Makefile

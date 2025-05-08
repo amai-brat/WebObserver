@@ -11,5 +11,5 @@ public class YouTubePlaylistObserving : Observing<YouTubePlaylistPayload>
         PlaylistId = playlistId;
     }
 
-    public required string PlaylistId { get; init; }
+    public string PlaylistId { get; init; } = null!;
 }

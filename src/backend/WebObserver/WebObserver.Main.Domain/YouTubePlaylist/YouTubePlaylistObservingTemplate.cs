@@ -4,5 +4,5 @@ namespace WebObserver.Main.Domain.YouTubePlaylist;
 
 public class YouTubePlaylistObservingTemplate : ObservingTemplate
 {
-    public override ObservingType Type => ObservingType.YoutubePlaylist;
+    public override ObservingType Type => ObservingType.YouTubePlaylist;
 }

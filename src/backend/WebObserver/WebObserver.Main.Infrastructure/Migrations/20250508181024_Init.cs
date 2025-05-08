@@ -6,6 +6,8 @@ using WebObserver.Main.Domain.YouTubePlaylist;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace WebObserver.Main.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -203,6 +205,15 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         principalTable: "you_tube_playlist_payload",
                         principalColumn: "observing_id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "templates",
+                columns: new[] { "id", "description", "discriminator", "name" },
+                values: new object[,]
+                {
+                    { 1, "Отслеживает за изменениями YouTube плейлиста: добавление, удаление, изменение ролика, недоступность ролика", "YouTubePlaylistObservingTemplate", "YouTube плейлист" },
+                    { 2, "Отслеживает за текстовым файлом (не бинари)", "TextObservingTemplate", "Текстовый файл" }
                 });
 
             migrationBuilder.CreateIndex(

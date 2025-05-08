@@ -8,10 +8,10 @@ public class TextObserving : Observing<TextPayload>
     {
     }
 
-    public TextObserving(ObservingTemplate template, string cronExpression) : base(template, cronExpression)
+    public TextObserving(ObservingTemplate template, string cronExpression, string url) : base(template, cronExpression)
     {
+        Url = url;
     }
-
-
-    public required string Url { get; init; }
+    
+    public string Url { get; init; } = null!;
 }

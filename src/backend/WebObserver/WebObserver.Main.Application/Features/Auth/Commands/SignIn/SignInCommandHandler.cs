@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using FluentResults;
 using WebObserver.Main.Application.Cqrs.Commands;
+using WebObserver.Main.Application.Features.Errors;
 using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Repositories;
 
@@ -13,9 +14,10 @@ public class SignInCommandHandler(
 {
     public async Task<Result<TokenDto>> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserAsync(request.Email, cancellationToken);
+        var user = await userRepository.GetByEmailAsync(request.Email, cancellationToken);
         if (user is null)
         {
+            return Result.Fail(new UserNotFoundError(1));
             return Result.Fail("User not found");
         }
 

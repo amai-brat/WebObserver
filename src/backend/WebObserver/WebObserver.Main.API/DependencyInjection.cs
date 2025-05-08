@@ -1,7 +1,11 @@
+using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using WebObserver.Main.Application.Features.Observings.Commands;
 using WebObserver.Main.Application.Options;
 
 namespace WebObserver.Main.API;
@@ -12,6 +16,10 @@ public static class DependencyInjection
     {
         serviceCollection.AddSwaggerGen(options =>
         {
+            options.UseOneOfForPolymorphism();
+            options.UseAllOfForInheritance();
+            options.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
+            
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.ApiKey,
@@ -51,6 +59,7 @@ public static class DependencyInjection
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
+                options.MapInboundClaims = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,

@@ -11,7 +11,7 @@ public abstract class ObservingBase
     public ObservingTemplate Template { get; protected set; } = null!;
     
     private string _cronExpression = string.Empty;
-    public required string CronExpression
+    public string CronExpression
     {
         get => _cronExpression;
         set
