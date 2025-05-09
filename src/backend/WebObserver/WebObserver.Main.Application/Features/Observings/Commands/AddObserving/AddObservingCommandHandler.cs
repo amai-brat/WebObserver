@@ -1,12 +1,15 @@
 using FluentResults;
+using FluentValidation;
 using WebObserver.Main.Application.Cqrs.Commands;
 using WebObserver.Main.Application.Features.Errors;
 using WebObserver.Main.Application.Features.Observings.Commands.AddObserving.Factories;
+using WebObserver.Main.Application.Helpers;
 using WebObserver.Main.Domain.Repositories;
 
 namespace WebObserver.Main.Application.Features.Observings.Commands.AddObserving;
 
 public class AddObservingCommandHandler(
+    IEnumerable<IValidator<AddObservingCommand>> validators,
     IObservingFactoryResolver factoryResolver,
     IUserRepository userRepository,
     IObservingTemplateRepository templateRepository,
@@ -14,6 +17,12 @@ public class AddObservingCommandHandler(
 {
     public async Task<Result<AddObservingResponse>> Handle(AddObservingCommand request, CancellationToken cancellationToken)
     {
+        var validationResult = validators.ToValidationResult(request);
+        if (validationResult.IsFailed)
+        {
+            return validationResult;
+        }
+        
         var user = await userRepository.GetByIdAsync(request.UserId, cancellationToken);
         if (user is null)
         {

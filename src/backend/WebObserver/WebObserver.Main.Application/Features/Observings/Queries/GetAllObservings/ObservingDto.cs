@@ -1,5 +1,9 @@
+using System.Text.Json.Serialization;
+
 namespace WebObserver.Main.Application.Features.Observings.Queries.GetAllObservings;
 
+[JsonDerivedType(typeof(YouTubePlaylistObservingDto))]
+[JsonDerivedType(typeof(TextObservingDto))]
 public class ObservingDto
 {
     public int Id { get; set; }

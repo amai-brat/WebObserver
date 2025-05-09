@@ -1,3 +1,5 @@
+using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using WebObserver.Main.Application.Features.Observings.Commands.AddObserving.Factories;
 using WebObserver.Main.Application.Services.Ifaces;
@@ -7,13 +9,16 @@ namespace WebObserver.Main.Application;
 
 public static class DependencyInjection
 {
+    private static readonly Assembly Assembly = typeof(DependencyInjection).Assembly;
+    
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddMediatR(conf =>
         {
-            conf.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+            conf.RegisterServicesFromAssembly(Assembly);
         });
-
+        services.AddValidatorsFromAssembly(Assembly);
+        
         services.AddScoped<ITokenService, TokenService>();
         
         services.AddScoped<IObservingFactory, TextObservingFactory>();

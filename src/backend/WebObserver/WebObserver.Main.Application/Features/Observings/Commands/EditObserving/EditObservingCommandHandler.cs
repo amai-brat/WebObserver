@@ -1,16 +1,25 @@
 using FluentResults;
+using FluentValidation;
 using WebObserver.Main.Application.Cqrs.Commands;
 using WebObserver.Main.Application.Features.Errors;
+using WebObserver.Main.Application.Helpers;
 using WebObserver.Main.Domain.Repositories;
 
 namespace WebObserver.Main.Application.Features.Observings.Commands.EditObserving;
 
 public class EditObservingCommandHandler(
+    IEnumerable<IValidator<EditObservingCommand>> validators,
     IUserRepository userRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<EditObservingCommand>
 {
     public async Task<Result> Handle(EditObservingCommand request, CancellationToken cancellationToken)
     {
+        var validationResult = validators.ToValidationResult(request);
+        if (validationResult.IsFailed)
+        {
+            return validationResult;
+        }
+        
         var user = await userRepository.GetByIdWithObservingsAsync(request.UserId, cancellationToken);
         if (user is null)
         {
