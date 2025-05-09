@@ -11,7 +11,6 @@ public static class ProblemDetailsHelper
         {
             Status = StatusCodes.Status400BadRequest,
             Title = "Bad Request",
-            Detail = "One or more errors occurred during signup.",
             Extensions =
             {
                 ["errors"] = errors.Select(e => new 

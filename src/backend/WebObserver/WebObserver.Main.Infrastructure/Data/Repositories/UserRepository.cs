@@ -24,6 +24,15 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         return user;
     }
 
+    public async Task<User?> GetByIdWithObservingsAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var user = await dbContext.Users
+            .Include(x => x.Observings)
+                .ThenInclude(x => x.Template)
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        return user;
+    }
+
     public async Task<User> AddAsync(User user, CancellationToken cancellationToken = default)
     {
         var entry = await dbContext.Users.AddAsync(user, cancellationToken);

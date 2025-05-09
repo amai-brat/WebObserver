@@ -35,6 +35,9 @@ public class AddObservingCommandHandler(
         user.AddObserving(observingResult.Value);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new AddObservingResponse();
+        return new AddObservingResponse
+        {
+            ObservingId = observingResult.Value.Id,
+        };
     }
 }

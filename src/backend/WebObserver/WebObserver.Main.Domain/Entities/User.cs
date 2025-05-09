@@ -18,4 +18,9 @@ public class User(string name, string email, byte[] passwordHash, byte[] passwor
     {
         _observings.Add(observing);
     }
+
+    public void RemoveObserving(ObservingBase observing)
+    {
+        _observings.Remove(observing);
+    }
 }
