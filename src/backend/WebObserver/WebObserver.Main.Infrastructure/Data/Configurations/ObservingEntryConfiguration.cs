@@ -19,7 +19,9 @@ public class TextObservingEntryConfiguration : IEntityTypeConfiguration<TextObse
 {
     public void Configure(EntityTypeBuilder<TextObservingEntry> builder)
     {
-        builder.HasOne(x => x.Payload);
+        builder.HasOne(x => x.Payload)
+            .WithOne()
+            .HasForeignKey<TextPayload>(x => x.ObservingEntryId);
     }
 }
 

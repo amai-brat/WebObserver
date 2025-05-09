@@ -10,8 +10,12 @@ using Newtonsoft.Json;
 using WebObserver.Main.Application.Options;
 using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Repositories;
+using WebObserver.Main.Domain.Services;
+using WebObserver.Main.Domain.Text;
 using WebObserver.Main.Infrastructure.Data;
 using WebObserver.Main.Infrastructure.Data.Repositories;
+using WebObserver.Main.Infrastructure.Jobs;
+using WebObserver.Main.Infrastructure.Jobs.Text;
 using WebObserver.Main.Infrastructure.Jobs.YouTubePlaylist;
 
 namespace WebObserver.Main.Infrastructure;
@@ -23,7 +27,9 @@ public static class DependencyInjection
         return services
             .AddData(configuration)
             .AddObservingApis()
-            .AddHangfire(configuration);
+            .AddHangfire(configuration)
+            .AddHttpClient()
+            .AddJobServices();
     }
 
     private static IServiceCollection AddData(this IServiceCollection services, IConfiguration configuration)
@@ -55,8 +61,7 @@ public static class DependencyInjection
                 ApplicationName = "YouTubePlaylistFetcher"
             });
         });
-
-        services.AddScoped<IYouTubePlaylistService, YouTubePlaylistService>();
+        
         
         return services;
     }
@@ -75,6 +80,20 @@ public static class DependencyInjection
         
         services.AddHangfireServer();
 
+        return services;
+    }
+
+    private static IServiceCollection AddJobServices(this IServiceCollection services)
+    {
+        services.AddScoped<IJobServiceFactory, TextJobServiceFactory>();
+        services.AddScoped<IJobServiceFactory, YouTubePlaylistJobServiceFactory>();
+
+        services.AddScoped<IDiffGenerator<TextPayload, TextDiffPayload>, TextDiffGenerator>();
+
+        
+        services.AddScoped<IJobServiceFactoryResolver, JobServiceFactoryResolver>();
+        services.AddScoped<IObservingJobOrchestrator, ObservingJobOrchestrator>();
+        
         return services;
     }
 }

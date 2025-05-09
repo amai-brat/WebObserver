@@ -10,6 +10,7 @@ using WebObserver.Main.Domain.Repositories;
 namespace WebObserver.Main.Application.Features.Observings.Commands.AddObserving;
 
 public class AddObservingCommandHandler(
+    IObservingJobOrchestrator observingJobOrchestrator,
     IEnumerable<IValidator<AddObservingCommand>> validators,
     IObservingFactoryResolver factoryResolver,
     IUserRepository userRepository,
@@ -45,6 +46,8 @@ public class AddObservingCommandHandler(
         user.AddObserving(observingResult.Value);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        observingJobOrchestrator.AddObservingJob(observingResult.Value);
+        
         return new AddObservingResponse
         {
             ObservingId = observingResult.Value.Id,

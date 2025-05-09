@@ -391,15 +391,8 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("last_diff_second_entry_id");
 
-                    b.Property<int?>("PayloadObservingEntryId")
-                        .HasColumnType("integer")
-                        .HasColumnName("payload_observing_entry_id");
-
                     b.HasIndex("ObservingId")
                         .HasDatabaseName("ix_observing_entries_observing_id");
-
-                    b.HasIndex("PayloadObservingEntryId")
-                        .HasDatabaseName("ix_observing_entries_payload_observing_entry_id");
 
                     b.HasIndex("LastDiffFirstEntryId", "LastDiffSecondEntryId")
                         .HasDatabaseName("ix_observing_entries_last_diff_first_entry_id_last_diff_second1");
@@ -621,18 +614,11 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_observing_entries_observings_observing_id");
 
-                    b.HasOne("WebObserver.Main.Domain.Text.TextPayload", "Payload")
-                        .WithMany()
-                        .HasForeignKey("PayloadObservingEntryId")
-                        .HasConstraintName("fk_observing_entries_text_payload_payload_observing_entry_id");
-
                     b.HasOne("WebObserver.Main.Domain.Base.DiffBase", "LastDiff")
                         .WithMany()
                         .HasForeignKey("LastDiffFirstEntryId", "LastDiffSecondEntryId");
 
                     b.Navigation("LastDiff");
-
-                    b.Navigation("Payload");
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.Base.ObservingEntry<WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload>", b =>
@@ -649,6 +635,16 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasForeignKey("LastDiffFirstEntryId", "LastDiffSecondEntryId");
 
                     b.Navigation("LastDiff");
+                });
+
+            modelBuilder.Entity("WebObserver.Main.Domain.Text.TextPayload", b =>
+                {
+                    b.HasOne("WebObserver.Main.Domain.Base.ObservingEntry<WebObserver.Main.Domain.Text.TextPayload>", null)
+                        .WithOne("Payload")
+                        .HasForeignKey("WebObserver.Main.Domain.Text.TextPayload", "ObservingEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_text_payload_observing_entries_observing_entry_id");
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload", b =>
@@ -674,6 +670,11 @@ namespace WebObserver.Main.Infrastructure.Migrations
             modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistObserving", b =>
                 {
                     b.Navigation("Entries");
+                });
+
+            modelBuilder.Entity("WebObserver.Main.Domain.Base.ObservingEntry<WebObserver.Main.Domain.Text.TextPayload>", b =>
+                {
+                    b.Navigation("Payload");
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.Base.ObservingEntry<WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload>", b =>

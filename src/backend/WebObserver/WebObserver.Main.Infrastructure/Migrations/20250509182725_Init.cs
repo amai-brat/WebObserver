@@ -124,6 +124,31 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "observing_entries",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    observing_id = table.Column<int>(type: "integer", nullable: false),
+                    occured_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    discriminator = table.Column<string>(type: "character varying(55)", maxLength: 55, nullable: false),
+                    observing_entry_last_diff_first_entry_id = table.Column<int>(type: "integer", nullable: true),
+                    observing_entry_last_diff_second_entry_id = table.Column<int>(type: "integer", nullable: true),
+                    last_diff_first_entry_id = table.Column<int>(type: "integer", nullable: true),
+                    last_diff_second_entry_id = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_observing_entries", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_observing_entries_observings_observing_id",
+                        column: x => x.observing_id,
+                        principalTable: "observings",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "unavailable_you_tube_playlist_item_you_tube_playlist_observing",
                 columns: table => new
                 {
@@ -158,6 +183,18 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_diff_text_diff_payload", x => new { x.first_entry_id, x.second_entry_id });
+                    table.ForeignKey(
+                        name: "FK_diff_text_diff_payload_observing_entries_first_entry_id",
+                        column: x => x.first_entry_id,
+                        principalTable: "observing_entries",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_diff_text_diff_payload_observing_entries_second_entry_id",
+                        column: x => x.second_entry_id,
+                        principalTable: "observing_entries",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,30 +208,16 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_diff_you_tube_playlist_diff_payload", x => new { x.first_entry_id, x.second_entry_id });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "observing_entries",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    observing_id = table.Column<int>(type: "integer", nullable: false),
-                    occured_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    discriminator = table.Column<string>(type: "character varying(55)", maxLength: 55, nullable: false),
-                    payload_observing_entry_id = table.Column<int>(type: "integer", nullable: true),
-                    observing_entry_last_diff_first_entry_id = table.Column<int>(type: "integer", nullable: true),
-                    observing_entry_last_diff_second_entry_id = table.Column<int>(type: "integer", nullable: true),
-                    last_diff_first_entry_id = table.Column<int>(type: "integer", nullable: true),
-                    last_diff_second_entry_id = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_observing_entries", x => x.id);
                     table.ForeignKey(
-                        name: "fk_observing_entries_observings_observing_id",
-                        column: x => x.observing_id,
-                        principalTable: "observings",
+                        name: "FK_diff_you_tube_playlist_diff_payload_observing_entries_first~",
+                        column: x => x.first_entry_id,
+                        principalTable: "observing_entries",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_diff_you_tube_playlist_diff_payload_observing_entries_secon~",
+                        column: x => x.second_entry_id,
+                        principalTable: "observing_entries",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -211,6 +234,12 @@ namespace WebObserver.Main.Infrastructure.Migrations
                     table.PrimaryKey("PK_text_payload", x => x.observing_entry_id);
                     table.ForeignKey(
                         name: "FK_text_payload_observing_entries_observing_entry_id",
+                        column: x => x.observing_entry_id,
+                        principalTable: "observing_entries",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_text_payload_observing_entries_observing_entry_id",
                         column: x => x.observing_entry_id,
                         principalTable: "observing_entries",
                         principalColumn: "id",
@@ -299,11 +328,6 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 column: "observing_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_observing_entries_payload_observing_entry_id",
-                table: "observing_entries",
-                column: "payload_observing_entry_id");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_observings_template_id",
                 table: "observings",
                 column: "template_id");
@@ -332,59 +356,19 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 name: "ix_you_tube_playlist_item_you_tube_playlist_payload_you_tube_p",
                 table: "you_tube_playlist_item_you_tube_playlist_payload",
                 column: "you_tube_playlist_payload_observing_entry_id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_diff_text_diff_payload_observing_entries_first_entry_id",
-                table: "diff_text_diff_payload",
-                column: "first_entry_id",
-                principalTable: "observing_entries",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_diff_text_diff_payload_observing_entries_second_entry_id",
-                table: "diff_text_diff_payload",
-                column: "second_entry_id",
-                principalTable: "observing_entries",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_diff_you_tube_playlist_diff_payload_observing_entries_first~",
-                table: "diff_you_tube_playlist_diff_payload",
-                column: "first_entry_id",
-                principalTable: "observing_entries",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_diff_you_tube_playlist_diff_payload_observing_entries_secon~",
-                table: "diff_you_tube_playlist_diff_payload",
-                column: "second_entry_id",
-                principalTable: "observing_entries",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_observing_entries_text_payload_payload_observing_entry_id",
-                table: "observing_entries",
-                column: "payload_observing_entry_id",
-                principalTable: "text_payload",
-                principalColumn: "observing_entry_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_text_payload_observing_entries_observing_entry_id",
-                table: "text_payload");
-
             migrationBuilder.DropTable(
                 name: "diff_text_diff_payload");
 
             migrationBuilder.DropTable(
                 name: "diff_you_tube_playlist_diff_payload");
+
+            migrationBuilder.DropTable(
+                name: "text_payload");
 
             migrationBuilder.DropTable(
                 name: "unavailable_you_tube_playlist_item_you_tube_playlist_observing");
@@ -406,9 +390,6 @@ namespace WebObserver.Main.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "observings");
-
-            migrationBuilder.DropTable(
-                name: "text_payload");
 
             migrationBuilder.DropTable(
                 name: "templates");

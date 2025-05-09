@@ -2,28 +2,27 @@ using FluentResults;
 using Google.Apis.YouTube.v3;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Domain.YouTubePlaylist;
 using WebObserver.Main.Infrastructure.Mappers;
 
 namespace WebObserver.Main.Infrastructure.Jobs.YouTubePlaylist;
 
-public class YouTubePlaylistService(IServiceScopeFactory scopeFactory) : IYouTubePlaylistService
+public class YouTubePlaylistJobService(IServiceScopeFactory scopeFactory) : IJobService
 {
     public async Task ObserveAsync(int observingId, CancellationToken cancellationToken = default)
     {
         await using (var scope = scopeFactory.CreateAsyncScope())
         {
             var observingRepo = scope.ServiceProvider.GetRequiredService<IObservingRepository>();
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<YouTubePlaylistService>>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<YouTubePlaylistJobService>>();
             var ytService = scope.ServiceProvider.GetRequiredService<YouTubeService>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             
             var observing = await observingRepo.GetByIdAsync(observingId, cancellationToken);
             if (observing is not YouTubePlaylistObserving ytObserving)
             {
-                throw new InvalidOperationException($"{nameof(YouTubePlaylistService)} is used for {observing?.GetType().Name ?? "null"}");
+                throw new InvalidOperationException($"{nameof(YouTubePlaylistJobService)} is used for {observing?.GetType().Name ?? "null"}");
             }
             
             var entryResult = await CreateEntryAsync(ytService, ytObserving, cancellationToken);

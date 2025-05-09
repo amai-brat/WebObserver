@@ -17,8 +17,7 @@ public class SignInCommandHandler(
         var user = await userRepository.GetByEmailAsync(request.Email, cancellationToken);
         if (user is null)
         {
-            return Result.Fail(new UserNotFoundError(1));
-            return Result.Fail("User not found");
+            return Result.Fail(new UserNotFoundError(-1));
         }
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
