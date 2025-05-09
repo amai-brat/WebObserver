@@ -10,10 +10,10 @@ public class ObseringPayloadConfiguration : IEntityTypeConfiguration<ObservingPa
 {
     public void Configure(EntityTypeBuilder<ObservingPayload> builder)
     {
-        builder.HasKey(x => x.ObservingId);
+        builder.HasKey(x => x.ObservingEntryId);
         builder.HasOne<ObservingEntryBase>()
             .WithOne()
-            .HasForeignKey<ObservingPayload>(x => x.ObservingId);
+            .HasForeignKey<ObservingPayload>(x => x.ObservingEntryId);
         
         builder.UseTpcMappingStrategy();
     }
@@ -42,6 +42,22 @@ public class YouTubePlaylistItemConfiguration : IEntityTypeConfiguration<YouTube
 {
     public void Configure(EntityTypeBuilder<YouTubePlaylistItem> builder)
     {
-        builder.HasKey(x => x.VideoId);
+        builder.HasKey(x => x.Id);
+    }
+}
+
+public class UnavailableYouTubePlaylistItemConfiguration : IEntityTypeConfiguration<UnavailableYouTubePlaylistItem>
+{
+    public void Configure(EntityTypeBuilder<UnavailableYouTubePlaylistItem> builder)
+    {
+        builder.HasKey(x => x.Id);
+        
+        builder.HasOne(x => x.SavedItem)
+            .WithMany()
+            .HasForeignKey(x => x.SavedItemId);
+        
+        builder.HasOne(x => x.CurrentItem)
+            .WithMany()
+            .HasForeignKey(x => x.CurrentItemId);
     }
 }

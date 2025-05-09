@@ -26,6 +26,9 @@ public class YouTubeObservingConfiguration : IEntityTypeConfiguration<YouTubePla
         builder.HasMany(x => x.Entries)
             .WithOne()
             .HasForeignKey(x => x.ObservingId);
+
+        builder.HasMany(x => x.UnavailableItems)
+            .WithMany();
     }
 }
 

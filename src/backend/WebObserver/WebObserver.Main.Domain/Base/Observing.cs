@@ -36,5 +36,11 @@ public abstract class Observing<TPayload> : ObservingBase
         CronExpression = cronExpression;
     }
 
-    public IReadOnlyList<ObservingEntry<TPayload>> Entries { get; set; } = [];
+    protected readonly List<ObservingEntry<TPayload>> _entries = [];
+    public IReadOnlyList<ObservingEntry<TPayload>> Entries => _entries;
+    
+    public virtual void AddEntry(ObservingEntry<TPayload> entry)
+    {
+        _entries.Add(entry);
+    }
 }

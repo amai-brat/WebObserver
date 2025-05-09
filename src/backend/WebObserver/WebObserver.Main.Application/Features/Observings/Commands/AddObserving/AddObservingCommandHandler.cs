@@ -4,6 +4,7 @@ using WebObserver.Main.Application.Cqrs.Commands;
 using WebObserver.Main.Application.Features.Errors;
 using WebObserver.Main.Application.Features.Observings.Commands.AddObserving.Factories;
 using WebObserver.Main.Application.Helpers;
+using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Repositories;
 
 namespace WebObserver.Main.Application.Features.Observings.Commands.AddObserving;

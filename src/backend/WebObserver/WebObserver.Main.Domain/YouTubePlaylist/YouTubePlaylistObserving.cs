@@ -12,4 +12,5 @@ public class YouTubePlaylistObserving : Observing<YouTubePlaylistPayload>
     }
 
     public string PlaylistId { get; init; } = null!;
+    public List<UnavailableYouTubePlaylistItem> UnavailableItems { get; set; } = [];
 }

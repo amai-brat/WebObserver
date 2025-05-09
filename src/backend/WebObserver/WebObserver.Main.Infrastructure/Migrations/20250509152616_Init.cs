@@ -51,17 +51,20 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 name: "you_tube_playlist_item",
                 columns: table => new
                 {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     video_id = table.Column<string>(type: "text", nullable: false),
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     position = table.Column<long>(type: "bigint", nullable: false),
                     thumbnail_url = table.Column<string>(type: "text", nullable: true),
                     published_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    video_owner_channel_title = table.Column<string>(type: "text", nullable: false)
+                    video_owner_channel_title = table.Column<string>(type: "text", nullable: true),
+                    status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_you_tube_playlist_item", x => x.video_id);
+                    table.PrimaryKey("pk_you_tube_playlist_item", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,6 +96,55 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "unavailable_you_tube_playlist_item",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    saved_item_id = table.Column<int>(type: "integer", nullable: true),
+                    current_item_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_unavailable_you_tube_playlist_item", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_unavailable_you_tube_playlist_item_you_tube_playlist_item_c",
+                        column: x => x.current_item_id,
+                        principalTable: "you_tube_playlist_item",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_unavailable_you_tube_playlist_item_you_tube_playlist_item_s",
+                        column: x => x.saved_item_id,
+                        principalTable: "you_tube_playlist_item",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "unavailable_you_tube_playlist_item_you_tube_playlist_observing",
+                columns: table => new
+                {
+                    unavailable_items_id = table.Column<int>(type: "integer", nullable: false),
+                    you_tube_playlist_observing_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_unavailable_you_tube_playlist_item_you_tube_playlist_observ", x => new { x.unavailable_items_id, x.you_tube_playlist_observing_id });
+                    table.ForeignKey(
+                        name: "fk_unavailable_you_tube_playlist_item_you_tube_playlist_observ",
+                        column: x => x.unavailable_items_id,
+                        principalTable: "unavailable_you_tube_playlist_item",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_unavailable_you_tube_playlist_item_you_tube_playlist_observ1",
+                        column: x => x.you_tube_playlist_observing_id,
+                        principalTable: "observings",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,10 +182,9 @@ namespace WebObserver.Main.Infrastructure.Migrations
                     observing_id = table.Column<int>(type: "integer", nullable: false),
                     occured_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     discriminator = table.Column<string>(type: "character varying(55)", maxLength: 55, nullable: false),
-                    observing_entry_payload_observing_id = table.Column<int>(type: "integer", nullable: true),
+                    payload_observing_entry_id = table.Column<int>(type: "integer", nullable: true),
                     observing_entry_last_diff_first_entry_id = table.Column<int>(type: "integer", nullable: true),
                     observing_entry_last_diff_second_entry_id = table.Column<int>(type: "integer", nullable: true),
-                    payload_observing_id = table.Column<int>(type: "integer", nullable: true),
                     last_diff_first_entry_id = table.Column<int>(type: "integer", nullable: true),
                     last_diff_second_entry_id = table.Column<int>(type: "integer", nullable: true)
                 },
@@ -152,15 +203,15 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 name: "text_payload",
                 columns: table => new
                 {
-                    observing_id = table.Column<int>(type: "integer", nullable: false),
+                    observing_entry_id = table.Column<int>(type: "integer", nullable: false),
                     text = table.Column<string>(type: "text", maxLength: -1, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_text_payload", x => x.observing_id);
+                    table.PrimaryKey("PK_text_payload", x => x.observing_entry_id);
                     table.ForeignKey(
-                        name: "FK_text_payload_observing_entries_observing_id",
-                        column: x => x.observing_id,
+                        name: "FK_text_payload_observing_entries_observing_entry_id",
+                        column: x => x.observing_entry_id,
                         principalTable: "observing_entries",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -170,14 +221,20 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 name: "you_tube_playlist_payload",
                 columns: table => new
                 {
-                    observing_id = table.Column<int>(type: "integer", nullable: false)
+                    observing_entry_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_you_tube_playlist_payload", x => x.observing_id);
+                    table.PrimaryKey("PK_you_tube_playlist_payload", x => x.observing_entry_id);
                     table.ForeignKey(
-                        name: "FK_you_tube_playlist_payload_observing_entries_observing_id",
-                        column: x => x.observing_id,
+                        name: "FK_you_tube_playlist_payload_observing_entries_observing_entry~",
+                        column: x => x.observing_entry_id,
+                        principalTable: "observing_entries",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_you_tube_playlist_payload_observing_entries_observing_entry",
+                        column: x => x.observing_entry_id,
                         principalTable: "observing_entries",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -187,23 +244,23 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 name: "you_tube_playlist_item_you_tube_playlist_payload",
                 columns: table => new
                 {
-                    items_video_id = table.Column<string>(type: "text", nullable: false),
-                    you_tube_playlist_payload_observing_id = table.Column<int>(type: "integer", nullable: false)
+                    items_id = table.Column<int>(type: "integer", nullable: false),
+                    you_tube_playlist_payload_observing_entry_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_you_tube_playlist_item_you_tube_playlist_payload", x => new { x.items_video_id, x.you_tube_playlist_payload_observing_id });
+                    table.PrimaryKey("pk_you_tube_playlist_item_you_tube_playlist_payload", x => new { x.items_id, x.you_tube_playlist_payload_observing_entry_id });
                     table.ForeignKey(
                         name: "fk_you_tube_playlist_item_you_tube_playlist_payload_you_tube_p",
-                        column: x => x.items_video_id,
+                        column: x => x.items_id,
                         principalTable: "you_tube_playlist_item",
-                        principalColumn: "video_id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_you_tube_playlist_item_you_tube_playlist_payload_you_tube_p1",
-                        column: x => x.you_tube_playlist_payload_observing_id,
+                        column: x => x.you_tube_playlist_payload_observing_entry_id,
                         principalTable: "you_tube_playlist_payload",
-                        principalColumn: "observing_id",
+                        principalColumn: "observing_entry_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -242,14 +299,9 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 column: "observing_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_observing_entries_payload_observing_id",
+                name: "ix_observing_entries_payload_observing_entry_id",
                 table: "observing_entries",
-                column: "payload_observing_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_observing_entries_payload_observing_id1",
-                table: "observing_entries",
-                column: "observing_entry_payload_observing_id");
+                column: "payload_observing_entry_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_observings_template_id",
@@ -262,9 +314,24 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_unavailable_you_tube_playlist_item_current_item_id",
+                table: "unavailable_you_tube_playlist_item",
+                column: "current_item_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_unavailable_you_tube_playlist_item_saved_item_id",
+                table: "unavailable_you_tube_playlist_item",
+                column: "saved_item_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_unavailable_you_tube_playlist_item_you_tube_playlist_observ",
+                table: "unavailable_you_tube_playlist_item_you_tube_playlist_observing",
+                column: "you_tube_playlist_observing_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_you_tube_playlist_item_you_tube_playlist_payload_you_tube_p",
                 table: "you_tube_playlist_item_you_tube_playlist_payload",
-                column: "you_tube_playlist_payload_observing_id");
+                column: "you_tube_playlist_payload_observing_entry_id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_diff_text_diff_payload_observing_entries_first_entry_id",
@@ -299,30 +366,19 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "fk_observing_entries_text_payload_payload_observing_id",
+                name: "fk_observing_entries_text_payload_payload_observing_entry_id",
                 table: "observing_entries",
-                column: "observing_entry_payload_observing_id",
+                column: "payload_observing_entry_id",
                 principalTable: "text_payload",
-                principalColumn: "observing_id");
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_observing_entries_you_tube_playlist_payload_payload_observi",
-                table: "observing_entries",
-                column: "payload_observing_id",
-                principalTable: "you_tube_playlist_payload",
-                principalColumn: "observing_id");
+                principalColumn: "observing_entry_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_text_payload_observing_entries_observing_id",
+                name: "FK_text_payload_observing_entries_observing_entry_id",
                 table: "text_payload");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_you_tube_playlist_payload_observing_entries_observing_id",
-                table: "you_tube_playlist_payload");
 
             migrationBuilder.DropTable(
                 name: "diff_text_diff_payload");
@@ -331,7 +387,16 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 name: "diff_you_tube_playlist_diff_payload");
 
             migrationBuilder.DropTable(
+                name: "unavailable_you_tube_playlist_item_you_tube_playlist_observing");
+
+            migrationBuilder.DropTable(
                 name: "you_tube_playlist_item_you_tube_playlist_payload");
+
+            migrationBuilder.DropTable(
+                name: "unavailable_you_tube_playlist_item");
+
+            migrationBuilder.DropTable(
+                name: "you_tube_playlist_payload");
 
             migrationBuilder.DropTable(
                 name: "you_tube_playlist_item");
@@ -344,9 +409,6 @@ namespace WebObserver.Main.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "text_payload");
-
-            migrationBuilder.DropTable(
-                name: "you_tube_playlist_payload");
 
             migrationBuilder.DropTable(
                 name: "templates");

@@ -27,6 +27,8 @@ public class YouTubePlaylistObservingEntryConfiguration : IEntityTypeConfigurati
 {
     public void Configure(EntityTypeBuilder<YouTubePlaylistObservingEntry> builder)
     {
-        builder.HasOne(x => x.Payload);
+        builder.HasOne(x => x.Payload)
+            .WithOne()
+            .HasForeignKey<YouTubePlaylistPayload>(x => x.ObservingEntryId);
     }
 }

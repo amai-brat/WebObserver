@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{E92C2ABD
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 		Makefile = Makefile
+		.env = .env
+		.env.template = .env.template
 	EndProjectSection
 EndProject
 Global

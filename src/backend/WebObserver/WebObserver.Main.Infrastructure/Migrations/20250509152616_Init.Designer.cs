@@ -14,7 +14,7 @@ using WebObserver.Main.Infrastructure.Data;
 namespace WebObserver.Main.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250508181024_Init")]
+    [Migration("20250509152616_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -26,6 +26,25 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("UnavailableYouTubePlaylistItemYouTubePlaylistObserving", b =>
+                {
+                    b.Property<int>("UnavailableItemsId")
+                        .HasColumnType("integer")
+                        .HasColumnName("unavailable_items_id");
+
+                    b.Property<int>("YouTubePlaylistObservingId")
+                        .HasColumnType("integer")
+                        .HasColumnName("you_tube_playlist_observing_id");
+
+                    b.HasKey("UnavailableItemsId", "YouTubePlaylistObservingId")
+                        .HasName("pk_unavailable_you_tube_playlist_item_you_tube_playlist_observ");
+
+                    b.HasIndex("YouTubePlaylistObservingId")
+                        .HasDatabaseName("ix_unavailable_you_tube_playlist_item_you_tube_playlist_observ");
+
+                    b.ToTable("unavailable_you_tube_playlist_item_you_tube_playlist_observing", (string)null);
+                });
 
             modelBuilder.Entity("WebObserver.Main.Domain.Base.DiffBase", b =>
                 {
@@ -133,11 +152,11 @@ namespace WebObserver.Main.Infrastructure.Migrations
 
             modelBuilder.Entity("WebObserver.Main.Domain.Base.ObservingPayload", b =>
                 {
-                    b.Property<int>("ObservingId")
+                    b.Property<int>("ObservingEntryId")
                         .HasColumnType("integer")
-                        .HasColumnName("observing_id");
+                        .HasColumnName("observing_entry_id");
 
-                    b.HasKey("ObservingId");
+                    b.HasKey("ObservingEntryId");
 
                     b.ToTable((string)null);
 
@@ -214,11 +233,43 @@ namespace WebObserver.Main.Infrastructure.Migrations
                     b.ToTable("users", (string)null);
                 });
 
+            modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.UnavailableYouTubePlaylistItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CurrentItemId")
+                        .HasColumnType("integer")
+                        .HasColumnName("current_item_id");
+
+                    b.Property<int?>("SavedItemId")
+                        .HasColumnType("integer")
+                        .HasColumnName("saved_item_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_unavailable_you_tube_playlist_item");
+
+                    b.HasIndex("CurrentItemId")
+                        .HasDatabaseName("ix_unavailable_you_tube_playlist_item_current_item_id");
+
+                    b.HasIndex("SavedItemId")
+                        .HasDatabaseName("ix_unavailable_you_tube_playlist_item_saved_item_id");
+
+                    b.ToTable("unavailable_you_tube_playlist_item", (string)null);
+                });
+
             modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistItem", b =>
                 {
-                    b.Property<string>("VideoId")
-                        .HasColumnType("text")
-                        .HasColumnName("video_id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -233,6 +284,11 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("published_at");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
                     b.Property<string>("ThumbnailUrl")
                         .HasColumnType("text")
                         .HasColumnName("thumbnail_url");
@@ -242,12 +298,16 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.Property<string>("VideoOwnerChannelTitle")
+                    b.Property<string>("VideoId")
                         .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("video_id");
+
+                    b.Property<string>("VideoOwnerChannelTitle")
                         .HasColumnType("text")
                         .HasColumnName("video_owner_channel_title");
 
-                    b.HasKey("VideoId")
+                    b.HasKey("Id")
                         .HasName("pk_you_tube_playlist_item");
 
                     b.ToTable("you_tube_playlist_item", (string)null);
@@ -255,18 +315,18 @@ namespace WebObserver.Main.Infrastructure.Migrations
 
             modelBuilder.Entity("YouTubePlaylistItemYouTubePlaylistPayload", b =>
                 {
-                    b.Property<string>("ItemsVideoId")
-                        .HasColumnType("text")
-                        .HasColumnName("items_video_id");
-
-                    b.Property<int>("YouTubePlaylistPayloadObservingId")
+                    b.Property<int>("ItemsId")
                         .HasColumnType("integer")
-                        .HasColumnName("you_tube_playlist_payload_observing_id");
+                        .HasColumnName("items_id");
 
-                    b.HasKey("ItemsVideoId", "YouTubePlaylistPayloadObservingId")
+                    b.Property<int>("YouTubePlaylistPayloadObservingEntryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("you_tube_playlist_payload_observing_entry_id");
+
+                    b.HasKey("ItemsId", "YouTubePlaylistPayloadObservingEntryId")
                         .HasName("pk_you_tube_playlist_item_you_tube_playlist_payload");
 
-                    b.HasIndex("YouTubePlaylistPayloadObservingId")
+                    b.HasIndex("YouTubePlaylistPayloadObservingEntryId")
                         .HasDatabaseName("ix_you_tube_playlist_item_you_tube_playlist_payload_you_tube_p");
 
                     b.ToTable("you_tube_playlist_item_you_tube_playlist_payload", (string)null);
@@ -334,15 +394,15 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("last_diff_second_entry_id");
 
-                    b.Property<int?>("PayloadObservingId")
+                    b.Property<int?>("PayloadObservingEntryId")
                         .HasColumnType("integer")
-                        .HasColumnName("payload_observing_id");
+                        .HasColumnName("payload_observing_entry_id");
 
                     b.HasIndex("ObservingId")
                         .HasDatabaseName("ix_observing_entries_observing_id");
 
-                    b.HasIndex("PayloadObservingId")
-                        .HasDatabaseName("ix_observing_entries_payload_observing_id1");
+                    b.HasIndex("PayloadObservingEntryId")
+                        .HasDatabaseName("ix_observing_entries_payload_observing_entry_id");
 
                     b.HasIndex("LastDiffFirstEntryId", "LastDiffSecondEntryId")
                         .HasDatabaseName("ix_observing_entries_last_diff_first_entry_id_last_diff_second1");
@@ -354,9 +414,6 @@ namespace WebObserver.Main.Infrastructure.Migrations
 
                             t.Property("LastDiffSecondEntryId")
                                 .HasColumnName("observing_entry_last_diff_second_entry_id");
-
-                            t.Property("PayloadObservingId")
-                                .HasColumnName("observing_entry_payload_observing_id");
                         });
 
                     b.HasDiscriminator().HasValue("ObservingEntry<TextPayload>");
@@ -374,15 +431,8 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("last_diff_second_entry_id");
 
-                    b.Property<int?>("PayloadObservingId")
-                        .HasColumnType("integer")
-                        .HasColumnName("payload_observing_id");
-
                     b.HasIndex("ObservingId")
                         .HasDatabaseName("ix_observing_entries_observing_id");
-
-                    b.HasIndex("PayloadObservingId")
-                        .HasDatabaseName("ix_observing_entries_payload_observing_id");
 
                     b.HasIndex("LastDiffFirstEntryId", "LastDiffSecondEntryId")
                         .HasDatabaseName("ix_observing_entries_last_diff_first_entry_id_last_diff_second");
@@ -457,9 +507,6 @@ namespace WebObserver.Main.Infrastructure.Migrations
 
                             t.Property("LastDiffSecondEntryId")
                                 .HasColumnName("observing_entry_last_diff_second_entry_id");
-
-                            t.Property("PayloadObservingId")
-                                .HasColumnName("observing_entry_payload_observing_id");
                         });
 
                     b.HasDiscriminator().HasValue("TextObservingEntry");
@@ -472,6 +519,23 @@ namespace WebObserver.Main.Infrastructure.Migrations
                     b.ToTable("observing_entries", (string)null);
 
                     b.HasDiscriminator().HasValue("YouTubePlaylistObservingEntry");
+                });
+
+            modelBuilder.Entity("UnavailableYouTubePlaylistItemYouTubePlaylistObserving", b =>
+                {
+                    b.HasOne("WebObserver.Main.Domain.YouTubePlaylist.UnavailableYouTubePlaylistItem", null)
+                        .WithMany()
+                        .HasForeignKey("UnavailableItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_unavailable_you_tube_playlist_item_you_tube_playlist_observ");
+
+                    b.HasOne("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistObserving", null)
+                        .WithMany()
+                        .HasForeignKey("YouTubePlaylistObservingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_unavailable_you_tube_playlist_item_you_tube_playlist_observ1");
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.Base.DiffBase", b =>
@@ -510,23 +574,42 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 {
                     b.HasOne("WebObserver.Main.Domain.Base.ObservingEntryBase", null)
                         .WithOne()
-                        .HasForeignKey("WebObserver.Main.Domain.Base.ObservingPayload", "ObservingId")
+                        .HasForeignKey("WebObserver.Main.Domain.Base.ObservingPayload", "ObservingEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.UnavailableYouTubePlaylistItem", b =>
+                {
+                    b.HasOne("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistItem", "CurrentItem")
+                        .WithMany()
+                        .HasForeignKey("CurrentItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_unavailable_you_tube_playlist_item_you_tube_playlist_item_c");
+
+                    b.HasOne("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistItem", "SavedItem")
+                        .WithMany()
+                        .HasForeignKey("SavedItemId")
+                        .HasConstraintName("fk_unavailable_you_tube_playlist_item_you_tube_playlist_item_s");
+
+                    b.Navigation("CurrentItem");
+
+                    b.Navigation("SavedItem");
                 });
 
             modelBuilder.Entity("YouTubePlaylistItemYouTubePlaylistPayload", b =>
                 {
                     b.HasOne("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistItem", null)
                         .WithMany()
-                        .HasForeignKey("ItemsVideoId")
+                        .HasForeignKey("ItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_you_tube_playlist_item_you_tube_playlist_payload_you_tube_p");
 
                     b.HasOne("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload", null)
                         .WithMany()
-                        .HasForeignKey("YouTubePlaylistPayloadObservingId")
+                        .HasForeignKey("YouTubePlaylistPayloadObservingEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_you_tube_playlist_item_you_tube_playlist_payload_you_tube_p1");
@@ -543,8 +626,8 @@ namespace WebObserver.Main.Infrastructure.Migrations
 
                     b.HasOne("WebObserver.Main.Domain.Text.TextPayload", "Payload")
                         .WithMany()
-                        .HasForeignKey("PayloadObservingId")
-                        .HasConstraintName("fk_observing_entries_text_payload_payload_observing_id");
+                        .HasForeignKey("PayloadObservingEntryId")
+                        .HasConstraintName("fk_observing_entries_text_payload_payload_observing_entry_id");
 
                     b.HasOne("WebObserver.Main.Domain.Base.DiffBase", "LastDiff")
                         .WithMany()
@@ -564,18 +647,21 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_observing_entries_observings_observing_id");
 
-                    b.HasOne("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload", "Payload")
-                        .WithMany()
-                        .HasForeignKey("PayloadObservingId")
-                        .HasConstraintName("fk_observing_entries_you_tube_playlist_payload_payload_observi");
-
                     b.HasOne("WebObserver.Main.Domain.Base.DiffBase", "LastDiff")
                         .WithMany()
                         .HasForeignKey("LastDiffFirstEntryId", "LastDiffSecondEntryId");
 
                     b.Navigation("LastDiff");
+                });
 
-                    b.Navigation("Payload");
+            modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload", b =>
+                {
+                    b.HasOne("WebObserver.Main.Domain.Base.ObservingEntry<WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload>", null)
+                        .WithOne("Payload")
+                        .HasForeignKey("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload", "ObservingEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_you_tube_playlist_payload_observing_entries_observing_entry");
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.Entities.User", b =>
@@ -591,6 +677,11 @@ namespace WebObserver.Main.Infrastructure.Migrations
             modelBuilder.Entity("WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistObserving", b =>
                 {
                     b.Navigation("Entries");
+                });
+
+            modelBuilder.Entity("WebObserver.Main.Domain.Base.ObservingEntry<WebObserver.Main.Domain.YouTubePlaylist.YouTubePlaylistPayload>", b =>
+                {
+                    b.Navigation("Payload");
                 });
 #pragma warning restore 612, 618
         }
