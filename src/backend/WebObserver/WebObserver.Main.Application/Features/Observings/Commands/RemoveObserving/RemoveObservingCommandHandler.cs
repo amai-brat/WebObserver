@@ -1,11 +1,13 @@
 using FluentResults;
 using WebObserver.Main.Application.Cqrs.Commands;
 using WebObserver.Main.Application.Features.Errors;
+using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Repositories;
 
 namespace WebObserver.Main.Application.Features.Observings.Commands.RemoveObserving;
 
 public class RemoveObservingCommandHandler(
+    IObservingJobOrchestrator observingJobOrchestrator,
     IUserRepository userRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<RemoveObservingCommand>
 {
@@ -26,6 +28,8 @@ public class RemoveObservingCommandHandler(
         user.RemoveObserving(observing);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        observingJobOrchestrator.RemoveObservingJob(observing);
         
         return Result.Ok();
     }

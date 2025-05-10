@@ -5,4 +5,5 @@ namespace WebObserver.Main.Application.Services.Ifaces;
 public interface IObservingJobOrchestrator
 {
     void AddObservingJob(ObservingBase observingBase);
+    void RemoveObservingJob(ObservingBase observingBase);
 }

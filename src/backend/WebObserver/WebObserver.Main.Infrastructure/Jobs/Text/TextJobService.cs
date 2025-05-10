@@ -32,6 +32,7 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
             if (entryResult.IsFailed)
             {
                 logger.LogWarning("Couldn't create text entry at {Time} with {Error}", DateTime.UtcNow, string.Join("\n", entryResult.Errors));
+                return;
             }
             
             textObserving.AddEntry(entryResult.Value);
