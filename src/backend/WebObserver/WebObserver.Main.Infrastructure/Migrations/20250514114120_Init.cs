@@ -73,12 +73,12 @@ namespace WebObserver.Main.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
                     started_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ended_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     template_id = table.Column<int>(type: "integer", nullable: false),
                     cron_expression = table.Column<string>(type: "text", nullable: false),
                     discriminator = table.Column<string>(type: "character varying(34)", maxLength: 34, nullable: false),
-                    user_id = table.Column<int>(type: "integer", nullable: true),
                     url = table.Column<string>(type: "text", nullable: true),
                     playlist_id = table.Column<string>(type: "text", nullable: true)
                 },
@@ -95,7 +95,8 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         name: "fk_observings_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

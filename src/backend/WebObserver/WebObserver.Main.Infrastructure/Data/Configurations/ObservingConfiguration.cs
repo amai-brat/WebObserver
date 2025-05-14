@@ -15,6 +15,10 @@ public class ObservingConfiguration : IEntityTypeConfiguration<ObservingBase>
             .WithMany()
             .HasForeignKey(x => x.TemplateId);
 
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.Observings)
+            .HasForeignKey(x => x.UserId);
+        
         builder.UseTphMappingStrategy();
     }
 }

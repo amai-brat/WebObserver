@@ -94,7 +94,7 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("template_id");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
 
@@ -552,12 +552,16 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_observings_templates_template_id");
 
-                    b.HasOne("WebObserver.Main.Domain.Entities.User", null)
+                    b.HasOne("WebObserver.Main.Domain.Entities.User", "User")
                         .WithMany("Observings")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_observings_users_user_id");
 
                     b.Navigation("Template");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WebObserver.Main.Domain.Base.ObservingPayload", b =>
