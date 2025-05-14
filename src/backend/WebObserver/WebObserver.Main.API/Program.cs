@@ -19,7 +19,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOpti
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddSwaggerGenWithBearer();
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();

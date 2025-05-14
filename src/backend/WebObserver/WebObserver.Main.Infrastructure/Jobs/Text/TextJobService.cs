@@ -1,6 +1,7 @@
 using FluentResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Domain.Services;
 using WebObserver.Main.Domain.Text;
@@ -9,6 +10,16 @@ namespace WebObserver.Main.Infrastructure.Jobs.Text;
 
 public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
 {
+    private static bool NeedToNotify(TextObservingEntry entry)
+    {
+        if (entry.LastDiff is not Diff<TextDiffPayload> diff)
+        {
+            return false;
+        }
+        
+        return !diff.Payload.IsEmpty;
+    }
+    
     public async Task ObserveAsync(int observingId, CancellationToken cancellationToken = default)
     {
         await using (var scope = scopeFactory.CreateAsyncScope())
@@ -16,12 +27,13 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
             var observingRepo = scope.ServiceProvider.GetRequiredService<IObservingRepository>();
             var httpClientFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<TextJobService>>();
+            var notifier = scope.ServiceProvider.GetRequiredService<INotifier>();
             var diffGenerator = scope.ServiceProvider.GetRequiredService<IDiffGenerator<TextPayload, TextDiffPayload>>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             
             logger.LogInformation("Observing Text {Id} at {Time}", observingId, DateTime.UtcNow);
             
-            var observing = await observingRepo.GetByIdAsync(observingId, cancellationToken);
+            var observing = await observingRepo.GetByIdWithUserAsync(observingId, cancellationToken);
             if (observing is not TextObserving textObserving)
             {
                 throw new InvalidOperationException($"{GetType().Name} is used for {observing?.GetType().Name ?? "null"}");
@@ -33,6 +45,11 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
             {
                 logger.LogWarning("Couldn't create text entry at {Time} with {Error}", DateTime.UtcNow, string.Join("\n", entryResult.Errors));
                 return;
+            }
+
+            if (NeedToNotify(entryResult.Value))
+            {
+                await notifier.NotifyAsync(observing.User, Message.Create(observing.User, observing), cancellationToken);
             }
             
             textObserving.AddEntry(entryResult.Value);

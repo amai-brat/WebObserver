@@ -6,4 +6,5 @@ public class TextDiffPayload : DiffPayload
 {
     public required List<string> Added { get; set; } = [];
     public required List<string> Removed { get; set; } = [];
+    public override bool IsEmpty => Added.Count + Removed.Count == 0;
 }

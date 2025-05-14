@@ -2,9 +2,11 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using WebObserver.Main.Application.Options;
@@ -17,19 +19,24 @@ using WebObserver.Main.Infrastructure.Data.Repositories;
 using WebObserver.Main.Infrastructure.Jobs;
 using WebObserver.Main.Infrastructure.Jobs.Text;
 using WebObserver.Main.Infrastructure.Jobs.YouTubePlaylist;
+using WebObserver.Main.Infrastructure.Services;
 
 namespace WebObserver.Main.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services, 
+        IConfiguration configuration, 
+        IWebHostEnvironment environment)
     {
         return services
             .AddData(configuration)
             .AddObservingApis()
             .AddHangfire(configuration)
             .AddHttpClient()
-            .AddJobServices();
+            .AddJobServices()
+            .AddNotifiers(environment);
     }
 
     private static IServiceCollection AddData(this IServiceCollection services, IConfiguration configuration)
@@ -73,7 +80,7 @@ public static class DependencyInjection
             conf.UsePostgreSqlStorage(options => 
                 options.UseNpgsqlConnection(configuration.GetConnectionString("Hangfire")));
             
-            conf.UseSerializerSettings(new JsonSerializerSettings() {
+            conf.UseSerializerSettings(new JsonSerializerSettings {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
         });
@@ -93,6 +100,16 @@ public static class DependencyInjection
         
         services.AddScoped<IJobServiceFactoryResolver, JobServiceFactoryResolver>();
         services.AddScoped<IObservingJobOrchestrator, ObservingJobOrchestrator>();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddNotifiers(this IServiceCollection services, IWebHostEnvironment environment)
+    {
+        if (environment.IsDevelopment())
+        {
+            services.AddScoped<INotifier, FakeNotifier>();
+        }
         
         return services;
     }

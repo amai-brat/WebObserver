@@ -6,9 +6,11 @@ namespace WebObserver.Main.Infrastructure.Data.Repositories;
 
 public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
 {
-    public async Task<ObservingBase?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<ObservingBase?> GetByIdWithUserAsync(int id, CancellationToken cancellationToken = default)
     {
-        var observing = await dbContext.Observings.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        var observing = await dbContext.Observings
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         return observing;
     }
 

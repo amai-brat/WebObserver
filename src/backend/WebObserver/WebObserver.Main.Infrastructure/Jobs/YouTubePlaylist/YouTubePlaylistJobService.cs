@@ -19,7 +19,7 @@ public class YouTubePlaylistJobService(IServiceScopeFactory scopeFactory) : IJob
             var ytService = scope.ServiceProvider.GetRequiredService<YouTubeService>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             
-            var observing = await observingRepo.GetByIdAsync(observingId, cancellationToken);
+            var observing = await observingRepo.GetByIdWithUserAsync(observingId, cancellationToken);
             if (observing is not YouTubePlaylistObserving ytObserving)
             {
                 throw new InvalidOperationException($"{nameof(YouTubePlaylistJobService)} is used for {observing?.GetType().Name ?? "null"}");
