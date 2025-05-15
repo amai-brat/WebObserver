@@ -1,11 +1,16 @@
 MIGRATION_NAME ?= Init
 PROJECT ?= ./WebObserver.Main.Infrastructure/WebObserver.Main.Infrastructure.csproj
 STARTUP_PROJECT ?= ./WebObserver.Main.API/WebObserver.Main.API.csproj
-CONSOLE_PROJECT ?= ./WebObserver.Main.Console/WebObserver.Main.Console.csproj
+CONSOLE_PROJECT = ./WebObserver.Main.Console/WebObserver.Main.Console.csproj
+WEBAPP_PROJECT = ./WebObserver.Main.API/WebObserver.Main.API.csproj
 
 run-console:
 	@echo "Запуск консольного приложения"
 	@dotnet run --project $(CONSOLE_PROJECT)
+
+run-webapp:
+	@echo "Запуск веб-приложения"
+	@dotnet run --project $(WEBAPP_PROJECT)
 
 add:
 	@echo "Создание миграции: $(MIGRATION_NAME)"
