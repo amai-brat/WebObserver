@@ -48,7 +48,11 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   let user: User | null;
   try {
-    user = jwtDecode<User>(token);
+    if (jwtDecode(token).exp! < (+new Date() / 1000)) {
+      user = null;
+    } else {
+      user = jwtDecode<User>(token);
+    }
   }
   catch {
     user = null;

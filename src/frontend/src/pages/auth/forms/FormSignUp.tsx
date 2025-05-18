@@ -49,7 +49,7 @@ export const FormSignUp = () => {
   });
 
   return (
-    <form className={formStyles.authForm} onSubmit={formik.handleSubmit}>
+    <form className={formStyles.authForm + " shadow"} onSubmit={formik.handleSubmit}>
       <div className={formStyles.inputWrapper}>
         <label htmlFor={"name"}>Name</label>
         <input name={"name"}

@@ -9,6 +9,8 @@ public class ObservingDto
     public int Id { get; set; }
     public DateTime StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
+    public DateTime LastEntryAt { get; set; }
+    public DateTime LastChangeAt { get; set; }
     public required ObservingTemplateDto Template { get; set; }
     public required string CronExpression { get; set; }
 }

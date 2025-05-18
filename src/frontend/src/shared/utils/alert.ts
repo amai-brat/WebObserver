@@ -2,9 +2,8 @@ import axios from "axios"
 import { toast } from "react-toastify";
 import type { PayloadAction, SerializedError } from "@reduxjs/toolkit";
 
-// TODO: change properties in backend
 export interface ApiError {
-  message: string;
+  errors: {message: string}[];
   title?: string;
   code?: number;
 }
@@ -12,7 +11,7 @@ export interface ApiError {
 export const getErrorMessage = (action: PayloadAction<ApiError | undefined, string, object, SerializedError>): string => {
   if (!action || !action.payload) return "";
   
-  return action.payload.message 
+  return action.payload.errors.map(x => x.message).join() 
     ?? action.payload.title 
     ?? action.error.message 
     ?? "";
@@ -26,12 +25,12 @@ export const alertError = (error: Error | string) => {
   
   if (!axios.isAxiosError(error)) return;
   const isApiError = (data: unknown): data is ApiError => {
-    return typeof data === "object" && data !== null && "message" in data;
+    return typeof data === "object" && data !== null && "errors" in data;
   };
 
   const responseData: unknown = error.response?.data;
   if (isApiError(responseData)) {
-    toast(responseData.message, { type: "error" });
+    toast(responseData.errors.map(x => x.message).join(), { type: "error" });
   } else {
     const fallbackMessage = error.message || "An unexpected error occurred";
     toast(fallbackMessage, { type: "error" });

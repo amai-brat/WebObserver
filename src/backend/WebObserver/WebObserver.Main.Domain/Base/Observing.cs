@@ -10,6 +10,9 @@ public abstract class ObservingBase
     public User User { get; set; } = null!;
     public DateTime StartedAt { get; set; } = DateTime.UtcNow;
     public DateTime? EndedAt { get; set; }
+
+    public DateTime LastEntryAt { get; set; }
+    public DateTime LastChangeAt { get; set; } = DateTime.UtcNow;
     
     public int TemplateId { get; set; }
     public ObservingTemplate Template { get; protected set; } = null!;

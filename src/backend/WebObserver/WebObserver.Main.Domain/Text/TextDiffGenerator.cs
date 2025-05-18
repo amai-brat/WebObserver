@@ -34,6 +34,8 @@ public class TextDiffGenerator : IDiffGenerator<TextPayload, TextDiffPayload>
 
         return new Diff<TextDiffPayload>
         {
+            FirstEntry = firstEntry,
+            SecondEntry = secondEntry,
             Payload = diffPayload
         };
     }

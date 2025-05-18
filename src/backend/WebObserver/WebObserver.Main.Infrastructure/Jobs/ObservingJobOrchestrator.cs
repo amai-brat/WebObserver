@@ -20,6 +20,18 @@ public class ObservingJobOrchestrator(
             observingBase.CronExpression);
     }
 
+    public void EditObservingJob(ObservingBase observingBase)
+    {
+        var factory = resolver.Resolve(observingBase);
+
+        var service = factory.CreateService();
+        var jobId = factory.GenerateJobId(observingBase);
+        
+        recurringJobManager.AddOrUpdate(jobId, 
+            () => service.ObserveAsync(observingBase.Id, CancellationToken.None), 
+            observingBase.CronExpression);
+    }
+
     public void RemoveObservingJob(ObservingBase observingBase)
     {
         var factory = resolver.Resolve(observingBase);

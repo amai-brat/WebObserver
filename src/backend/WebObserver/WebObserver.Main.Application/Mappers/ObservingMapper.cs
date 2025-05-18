@@ -33,6 +33,8 @@ public static class ObservingMapper
             Id = observing.Id,
             StartedAt = observing.StartedAt,
             EndedAt = observing.EndedAt,
+            LastEntryAt = observing.LastEntryAt,
+            LastChangeAt = observing.LastChangeAt,
             Template = observing.Template.ToDto(), 
             CronExpression = observing.CronExpression
         };
@@ -45,6 +47,8 @@ public static class ObservingMapper
             Id = observing.Id,
             StartedAt = observing.StartedAt,
             EndedAt = observing.EndedAt,
+            LastEntryAt = observing.LastEntryAt,
+            LastChangeAt = observing.LastChangeAt,
             Template = observing.Template.ToDto(),
             CronExpression = observing.CronExpression,
             PlaylistId = observing.PlaylistId
@@ -58,6 +62,8 @@ public static class ObservingMapper
             Id = observing.Id,
             StartedAt = observing.StartedAt,
             EndedAt = observing.EndedAt,
+            LastEntryAt = observing.LastEntryAt,
+            LastChangeAt = observing.LastChangeAt,
             Template = observing.Template.ToDto(),
             CronExpression = observing.CronExpression,
             Url = observing.Url

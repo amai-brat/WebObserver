@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Npgsql;
 using WebObserver.Main.Application.Options;
 using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Repositories;
@@ -43,7 +44,9 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(b =>
         {
-            b.UseNpgsql(configuration.GetConnectionString("Postgres"));
+            b.UseNpgsql(new NpgsqlDataSourceBuilder(configuration.GetConnectionString("Postgres"))
+                .EnableDynamicJson()
+                .Build());
             b.EnableSensitiveDataLogging();
             b.UseSnakeCaseNamingConvention();
         });

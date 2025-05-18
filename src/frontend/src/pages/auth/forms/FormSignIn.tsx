@@ -39,7 +39,7 @@ export const FormSignIn = () => {
       try {
         await signin(values);
         toast("Успешний вход", {type: "success"});
-        setTimeout(() => navigate(ROUTES.MAIN), 2000);
+        setTimeout(() => navigate(ROUTES.HOME), 2000);
       } catch (error) {
         alertError(error as Error);
       }
@@ -47,7 +47,7 @@ export const FormSignIn = () => {
   });
   
   return (
-    <form className={formStyles.authForm} onSubmit={formik.handleSubmit}>
+    <form className={formStyles.authForm + " shadow"} onSubmit={formik.handleSubmit}>
       <div className={formStyles.inputWrapper}>
         <label htmlFor={"email"}>Email</label>
         <input name={"email"}

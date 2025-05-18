@@ -46,7 +46,13 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
                 logger.LogWarning("Couldn't create text entry at {Time} with {Error}", DateTime.UtcNow, string.Join("\n", entryResult.Errors));
                 return;
             }
-
+            
+            observing.LastEntryAt = DateTime.UtcNow;
+            if (entryResult.Value.LastDiff is Diff<TextDiffPayload> { Payload.IsEmpty: false })
+            {
+                observing.LastChangeAt = DateTime.UtcNow;
+            }
+            
             if (NeedToNotify(entryResult.Value))
             {
                 await notifier.NotifyAsync(observing.User, Message.Create(observing.User, observing), cancellationToken);

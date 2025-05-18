@@ -12,11 +12,11 @@ public class DiffConfiguration : IEntityTypeConfiguration<DiffBase>
     public void Configure(EntityTypeBuilder<DiffBase> builder)
     {
         builder.HasKey(x => new { x.FirstEntryId, x.SecondEntryId });
-        builder.HasOne<ObservingEntryBase>()
+        builder.HasOne(x => x.FirstEntry)
             .WithMany()
             .HasForeignKey(x => x.FirstEntryId);
         
-        builder.HasOne<ObservingEntryBase>()
+        builder.HasOne(x => x.SecondEntry)
             .WithMany()
             .HasForeignKey(x => x.SecondEntryId);
         
