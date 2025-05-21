@@ -11,4 +11,9 @@ public class ObservingTemplateRepository(AppDbContext dbContext) : IObservingTem
         var template = await dbContext.Templates.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
         return template;
     }
+
+    public async Task<IEnumerable<ObservingTemplate>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Templates.ToListAsync(cancellationToken);
+    }
 }

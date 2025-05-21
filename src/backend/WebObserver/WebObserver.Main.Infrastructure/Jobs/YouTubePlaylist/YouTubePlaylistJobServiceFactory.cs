@@ -10,7 +10,7 @@ public class YouTubePlaylistJobServiceFactory(IServiceScopeFactory  scopeFactory
     
     public string GenerateJobId(ObservingBase observing)
     {
-        return $"yt-playlist:{observing.Id}";
+        return $"{observing.UserId}:yt-playlist:{observing.Id}";
     }
 
     public IJobService CreateService()

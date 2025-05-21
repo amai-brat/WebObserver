@@ -7,13 +7,14 @@ import { SignInPage } from './pages/auth/SignInPage/SignInPage'
 import { Toast } from './shared/ui/Toast/Toast'
 import { HomePage } from './pages/home/HomePage'
 import { ProtectedRoute } from './shared/ui/ProtectedRoute/ProtectedRoute'
+import { ObservingPage } from './pages/observing/ObservingPage'
 
 function App() {
-
+  
   return (
     <>
       <Toast />
-      <Header></Header>
+      <Header />
       <Routes>
         <Route path={ROUTES.MAIN} element={<MainPage />}></Route>
         <Route element={<ProtectedRoute />}>
@@ -21,6 +22,7 @@ function App() {
         </Route>
         <Route path={ROUTES.SIGNUP} element={<SignUpPage />}></Route>
         <Route path={ROUTES.SIGNIN} element={<SignInPage />}></Route>
+        <Route path={ROUTES.OBSERVING} element={<ObservingPage />}></Route>
       </Routes>
     </>
   )

@@ -1,4 +1,5 @@
 using WebObserver.Main.Application.Features.Observings.Queries.GetAllObservings;
+using WebObserver.Main.Application.Features.Observings.Queries.GetTemplates;
 using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Text;
 using WebObserver.Main.Domain.YouTubePlaylist;
@@ -35,7 +36,7 @@ public static class ObservingMapper
             EndedAt = observing.EndedAt,
             LastEntryAt = observing.LastEntryAt,
             LastChangeAt = observing.LastChangeAt,
-            Template = observing.Template.ToDto(), 
+            Template = TemplateDto.From(observing.Template), 
             CronExpression = observing.CronExpression
         };
     }
@@ -49,7 +50,7 @@ public static class ObservingMapper
             EndedAt = observing.EndedAt,
             LastEntryAt = observing.LastEntryAt,
             LastChangeAt = observing.LastChangeAt,
-            Template = observing.Template.ToDto(),
+            Template = TemplateDto.From(observing.Template), 
             CronExpression = observing.CronExpression,
             PlaylistId = observing.PlaylistId
         };
@@ -64,7 +65,7 @@ public static class ObservingMapper
             EndedAt = observing.EndedAt,
             LastEntryAt = observing.LastEntryAt,
             LastChangeAt = observing.LastChangeAt,
-            Template = observing.Template.ToDto(),
+            Template = TemplateDto.From(observing.Template), 
             CronExpression = observing.CronExpression,
             Url = observing.Url
         };

@@ -36,3 +36,7 @@ export const alertError = (error: Error | string) => {
     toast(fallbackMessage, { type: "error" });
   }
 }
+
+export const alertSuccess = (message: string) => {
+  toast(message, { type: "success" });
+}

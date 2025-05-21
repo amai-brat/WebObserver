@@ -10,7 +10,7 @@ public class TextJobServiceFactory(IServiceScopeFactory scopeFactory) : IJobServ
     
     public string GenerateJobId(ObservingBase observing)
     {
-        return $"text:{observing.Id}";
+        return $"{observing.UserId}:text:{observing.Id}";
     }
 
     public IJobService CreateService()

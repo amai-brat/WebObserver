@@ -32,23 +32,31 @@ interface GetAllObservingsResponse {
 }
 
 
-const getAll = async (): Promise<ObservingBase[]> => {
-  const { data } = await apiClient.get<GetAllObservingsResponse>(ENDPOINTS.OBSERVING.GET_ALL);
+const getAll = async (abortSignal?: AbortSignal): Promise<ObservingBase[]> => {
+  const { data } = await apiClient.get<GetAllObservingsResponse>(ENDPOINTS.OBSERVING.GET_ALL, {
+    signal: abortSignal
+  });
   return data.observings;
 }
 
-const create = async (dto: BaseCreateObservingDto): Promise<number> => {
-  const { data } = await apiClient.post<CreateObservingResponse>(ENDPOINTS.OBSERVING.CREATE, dto);
+const create = async (dto: BaseCreateObservingDto, abortSignal?: AbortSignal): Promise<number> => {
+  const { data } = await apiClient.post<CreateObservingResponse>(ENDPOINTS.OBSERVING.CREATE, dto, {
+    signal: abortSignal
+  });
   return data.observingId;
 }
 
-const remove = async (observingId: number): Promise<void> => {
-  const { data } = await apiClient.delete<void>(`${ENDPOINTS.OBSERVING.DELETE}${observingId}`);
+const remove = async (observingId: number, abortSignal?: AbortSignal): Promise<void> => {
+  const { data } = await apiClient.delete<void>(`${ENDPOINTS.OBSERVING.DELETE}${observingId}`, {
+    signal: abortSignal
+  });
   return data;
 }
 
-const edit = async (observingId: number, dto: EditObservingDto): Promise<void> => {
-  const { data } = await apiClient.patch<void>(`${ENDPOINTS.OBSERVING.EDIT}${observingId}`, dto);
+const edit = async (observingId: number, dto: EditObservingDto, abortSignal?: AbortSignal): Promise<void> => {
+  const { data } = await apiClient.patch<void>(`${ENDPOINTS.OBSERVING.EDIT}${observingId}`, dto, {
+    signal: abortSignal
+  });
   return data;
 }
 

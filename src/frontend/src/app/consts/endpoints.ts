@@ -8,5 +8,8 @@ export const ENDPOINTS = {
     "CREATE": "/api/observings",
     "EDIT": "/api/observings/",
     "DELETE": "/api/observings/"
+  },
+  "TEMPLATE": {
+    "GET_ALL": "/api/templates"
   }
 } as const;
