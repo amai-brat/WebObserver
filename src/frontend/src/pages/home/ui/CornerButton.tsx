@@ -8,6 +8,7 @@ interface CornerButtonProps {
 export const CornerButton: FC<CornerButtonProps> = ({ onClick }) => {
   return (
     <button
+        type="button"
         onClick={onClick}
         className="fixed bottom-8 right-8 bg-primary-darker text-white p-4 rounded-full 
                  shadow-lg hover:bg-blue-700 transition-colors duration-200"

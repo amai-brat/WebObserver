@@ -71,6 +71,7 @@ export const YouTubePlaylistObservingForm: React.FC<YouTubePlaylistObservingForm
             value={formik.values.cronExpression}
             onChange={formik.handleChange}>
             {availableCrons.map((cr, i) => (
+              // eslint-disable-next-line react-x/no-array-index-key
               <option key={i} value={cr}>{cronstrue.toString(cr, { locale: navigator.language })}</option>
             ))}
           </select>

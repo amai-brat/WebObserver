@@ -17,7 +17,7 @@ export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ se
   useEffect(() => {
     const ac = new AbortController();
 
-    (async () => {
+    void (async () => {
       try {
         const result = await templateApi.getAll();
         setTemplates(result);
@@ -33,7 +33,7 @@ export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ se
 
   const handleTemplateSelect = (templateId: number) => {
     const template = templates.find(t => t.id === templateId);
-    setSelectedTemplate(template || null);
+    setSelectedTemplate(template ?? null);
   };
 
   const renderForm = () => {
@@ -55,7 +55,7 @@ export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ se
         <div className="rounded-2xl bg-primary-darker m-2">
           <div className="text-center p-4 font-bold">Шаблоны</div>
           <div className="p-4 bg-primary rounded-2xl w-full">
-            {templates && templates.map(t => (
+            {templates?.map(t => (
               <div
                 key={t.id}
                 title={t.name}
@@ -69,7 +69,7 @@ export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ se
         </div>
       </div>
       <div className="bg-white rounded-2xl w-full overflow-scroll">
-        {renderForm() || <div className="p-4 text-primary-darker">Выберите шаблон слева</div>}
+        {renderForm() ?? <div className="p-4 text-primary-darker">Выберите шаблон слева</div>}
       </div>
     </div>);
 }

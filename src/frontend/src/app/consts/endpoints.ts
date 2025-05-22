@@ -4,6 +4,7 @@ export const ENDPOINTS = {
     "SIGNIN": "/api/auth/signin",
   },
   "OBSERVING": {
+    "GET": "/api/observings/",
     "GET_ALL": "/api/observings",
     "CREATE": "/api/observings",
     "EDIT": "/api/observings/",

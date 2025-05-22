@@ -6,8 +6,9 @@ using WebObserver.Main.Domain.YouTubePlaylist;
 
 namespace WebObserver.Main.Application.Features.Observings.Queries.Dtos;
 
-[JsonDerivedType(typeof(YouTubePlaylistObservingDto))]
-[JsonDerivedType(typeof(TextObservingDto))]
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(YouTubePlaylistObservingDto), nameof(ObservingType.YouTubePlaylist))]
+[JsonDerivedType(typeof(TextObservingDto), nameof(ObservingType.Text))]
 public class ObservingDto
 {
     public int Id { get; set; }

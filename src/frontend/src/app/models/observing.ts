@@ -1,4 +1,8 @@
+import type { ObservingEntry } from "./observingEntry";
+
 // templateId -> templateType
+export type ObservingTypeKey = keyof typeof ObservingTypes; // 0 | 1 | 2
+export type ObservingTypeValue = typeof ObservingTypes[ObservingTypeKey] // "NONE" | "YouTubePlaylist" | "Text";
 export const ObservingTypes = {
   0: "NONE",
   1: "YouTubePlaylist",
@@ -13,6 +17,7 @@ export interface ObservingTemplate {
 }
 
 export interface ObservingBase {
+  $type: ObservingTypeValue,
   id: number,
   startedAt: string,
   endedAt: string,
@@ -20,6 +25,7 @@ export interface ObservingBase {
   lastChangeAt: string,
   cronExpression: string,
   template: ObservingTemplate,
+  entries: ObservingEntry[];
 }
 
 export interface TextObserving extends ObservingBase{
@@ -29,3 +35,4 @@ export interface TextObserving extends ObservingBase{
 export interface YouTubePlaylistObserving extends ObservingBase {
   playlistId: string
 }
+

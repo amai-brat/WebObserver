@@ -27,8 +27,20 @@ interface CreateObservingResponse {
   observingId: number;
 }
 
+interface GetObservingResponse {
+  observing: ObservingBase
+}
+
 interface GetAllObservingsResponse {
   observings: ObservingBase[]
+}
+
+
+const get = async (observingId: number, abortSignal?: AbortSignal): Promise<ObservingBase> => {
+  const { data } = await apiClient.get<GetObservingResponse>(`${ENDPOINTS.OBSERVING.GET}${observingId}`, {
+    signal: abortSignal
+  });
+  return data.observing;
 }
 
 
@@ -62,6 +74,7 @@ const edit = async (observingId: number, dto: EditObservingDto, abortSignal?: Ab
 
 
 export const observingApi = {
+  get,
   getAll,
   create,
   remove,

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ObservingTypes, type ObservingBase, type TextObserving, type YouTubePlaylistObserving } from "../../../app/models/observing";
 import { observingApi } from "../../../shared/api/observingApi";
 import { alertError, alertSuccess } from "../../../shared/utils/alert";
 import cronstrue from 'cronstrue/i18n';
@@ -9,41 +8,19 @@ import { MdDelete } from 'react-icons/md';
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../../app/consts/routes";
-
-type ObservingGridEntryData = ObservingBase & { resourceId: string }
+import { FaClipboard } from "react-icons/fa";
+import { ObservingWithResourceId } from "../../../app/models/observingWithResourceId";
 
 export const ObservingsTable = () => {
-  const [observings, setObservings] = useState<ObservingGridEntryData[]>();
-
-  const toGridEntryData = (observing: ObservingBase): ObservingGridEntryData => {
-    const isValidTemplateId = (id: number): id is keyof typeof ObservingTypes => {
-      return id in ObservingTypes;
-    }
-
-    const id = observing.template.id;
-    if (!isValidTemplateId(id)) {
-      throw new Error('Not valid template id given');
-    }
-
-    switch (ObservingTypes[id]) {
-      case "YouTubePlaylist":
-        const ytPl = observing as YouTubePlaylistObserving;
-        return { ...observing, resourceId: ytPl.playlistId }
-      case "Text":
-        const tex = observing as TextObserving;
-        return { ...observing, resourceId: tex.url };
-      default:
-        return { ...observing, resourceId: '' };
-    }
-  }
+  const [observings, setObservings] = useState<ObservingWithResourceId[]>();
 
   useEffect(() => {
     const ac = new AbortController();
 
-    (async () => {
+    void (async () => {
       try {
         const resp = await observingApi.getAll(ac.signal);
-        setObservings(resp.map(toGridEntryData));
+        setObservings(resp.map(ObservingWithResourceId.convertFrom));
       } catch (e) {
         if (!axios.isCancel(e)) {
           alertError(e as Error);
@@ -60,7 +37,7 @@ export const ObservingsTable = () => {
   const copyToClipBoard = async (toCopy: string): Promise<void> => {
     try {
       await navigator.clipboard.writeText(toCopy);
-      toast("Скопировано", { type: "success" });
+      toast(`Скопировано: ${toCopy}`, { type: "success" });
     } catch (err) {
       console.error('Failed to copy text: ', err);
     }
@@ -81,7 +58,7 @@ export const ObservingsTable = () => {
   const onRefreshButtonClicked = async (): Promise<void> => {
     try {
       const resp = await observingApi.getAll();
-      setObservings(resp.map(toGridEntryData));
+      setObservings(resp.map(ObservingWithResourceId.convertFrom));
     } catch (e) {
       if (!axios.isCancel(e)) {
         alertError(e as Error);
@@ -97,12 +74,12 @@ export const ObservingsTable = () => {
         <div className="p-4 border-r-1 border-secondary line-clamp-2 overflow-hidden">Последняя проверка</div>
         <div className="p-4 border-r-1 border-secondary line-clamp-2 overflow-hidden">Последнее изменение</div>
         <div className="p-4 border-r-1 border-secondary line-clamp-2 overflow-hidden">Частотность проверки</div>
-        <div className="p-4 self-center m-auto cursor-pointer"><IoMdRefresh size={36} onClick={() => onRefreshButtonClicked()} /></div>
+        <div className="p-4 self-center m-auto cursor-pointer"><IoMdRefresh size={36} onClick={() => void onRefreshButtonClicked()} /></div>
       </div>
       {(!observings || observings?.length == 0) && <p>У вас пока нет отслеживаемых ресурсов</p>}
-      {observings && observings.map(o => (
+      {observings?.map(o => (
         <div key={o.id}>
-          <div className="grid grid-cols-[2fr_2fr_2fr_2fr_2fr_0.5fr] gap-1 px-4 hover:bg-secondary">
+          <div className="grid grid-cols-[2fr_2fr_2fr_2fr_2fr_0.5fr] gap-1 px-4 hover:bg-secondary items-center">
             <Link to={ROUTES.OBSERVING.replace(":id", `${o.id}`)} className="contents">
               <div
                 className="py-4 px-1 text-center border-r-1 border-secondary line-clamp-2 overflow-hidden"
@@ -112,11 +89,15 @@ export const ObservingsTable = () => {
               </div>
 
               <div
-                className="py-4 px-1 text-center border-r-1 border-secondary overflow-hidden overflow-ellipsis text-nowrap cursor-pointer"
+                className="py-4 px-1 text-center border-r-1 border-secondary line-clamp-2 overflow-hidden flex-row flex"
                 title={o.resourceId}
-                onClick={() => copyToClipBoard(o.resourceId)}
+                onClick={() => void copyToClipBoard(o.resourceId)}
               >
-                {o.resourceId}
+                <p className="overflow-hidden overflow-ellipsis text-nowrap">{o.resourceId}</p>
+                <button type="button" className="cursor-pointer" onClick={(e) => {
+                  e.preventDefault();
+                  void copyToClipBoard(o.resourceId);
+                }}><FaClipboard size={24} color="purple"/></button>
               </div>
 
               <div
@@ -144,9 +125,9 @@ export const ObservingsTable = () => {
             <div
               className="p-4 text-center self-center m-auto"
             >
-              <MdDelete size={36} color="red" onClick={(e) => {
+              <MdDelete size={36} color="red" className="cursor-pointer" onClick={(e) => {
                 e.preventDefault();
-                onDeleteButtonClicked(o.id)
+                void onDeleteButtonClicked(o.id)
               }} />
             </div>
           </div>
