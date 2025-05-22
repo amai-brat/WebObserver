@@ -25,6 +25,10 @@ apply:
 	@dotnet ef database update --project $(PROJECT) --startup-project $(STARTUP_PROJECT)
 
 revert:
+	@echo "Откат до миграции: $(MIGRATION_NAME)"
+	@dotnet ef database update $(MIGRATION_NAME) --project $(PROJECT) --startup-project $(STARTUP_PROJECT)
+
+revert-all:
 	@echo "Откат миграций"
 	@dotnet ef database update 0 --project $(PROJECT) --startup-project $(STARTUP_PROJECT)
 

@@ -36,7 +36,8 @@ public class TextDiffGenerator : IDiffGenerator<TextPayload, TextDiffPayload>
         {
             FirstEntry = firstEntry,
             SecondEntry = secondEntry,
-            Payload = diffPayload
+            Payload = diffPayload,
+            Summary = diffPayload.CreateSummary()
         };
     }
 

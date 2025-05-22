@@ -16,6 +16,19 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
         return observing;
     }
 
+    public async Task<ObservingBase?> GetByIdWithEntriesSummaryAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var observing = await dbContext.Observings
+            .Include(x => x.Template)
+            .Include(x => (x as TextObserving)!.Entries)
+                .ThenInclude(x => x.LastDiff)
+            .Include(x => (x as YouTubePlaylistObserving)!.Entries)
+                .ThenInclude(x => x.LastDiff)
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        
+        return observing;
+    }
+    
     public async Task<ObservingBase?> GetByIdWithEntriesAsync(int id, CancellationToken cancellationToken = default)
     {
         var observing = await dbContext.Observings
@@ -24,12 +37,10 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
                 .ThenInclude(x => x.Payload)
             .Include(x => (x as TextObserving)!.Entries)
                 .ThenInclude(x => x.LastDiff)
-                    // .ThenInclude(x => x!.Payload)
             .Include(x => (x as YouTubePlaylistObserving)!.Entries)
                 .ThenInclude(x => x.Payload)
             .Include(x => (x as YouTubePlaylistObserving)!.Entries)
                 .ThenInclude(x => x.LastDiff)
-                   // .ThenInclude(x => x!.Payload)
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         
         return observing;

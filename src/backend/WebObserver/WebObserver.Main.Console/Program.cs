@@ -47,7 +47,7 @@ async Task CheckRepositoryAsync()
     await using var dbContext = new AppDbContext(CreateOptions());
     var observingRepo = new ObservingRepository(dbContext);
 
-    var observing = await observingRepo.GetByIdWithEntriesAsync(1);
+    var observing = await observingRepo.GetByIdWithEntriesSummaryAsync(1);
 }
 
 DbContextOptions<AppDbContext> CreateOptions()

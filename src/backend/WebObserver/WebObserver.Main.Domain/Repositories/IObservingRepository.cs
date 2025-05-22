@@ -5,7 +5,7 @@ namespace WebObserver.Main.Domain.Repositories;
 public interface IObservingRepository
 {
     Task<ObservingBase?> GetByIdWithUserAsync(int id, CancellationToken cancellationToken = default);
-    Task<ObservingBase?> GetByIdWithEntriesAsync(int id, CancellationToken cancellationToken = default);
+    Task<ObservingBase?> GetByIdWithEntriesSummaryAsync(int id, CancellationToken cancellationToken = default);
     Task<ObservingEntry<TPayload, TDiffPayload>?> GetLastEntryByObservingIdAsync<TPayload, TDiffPayload>(
         int observingId,
         CancellationToken cancellationToken = default) 

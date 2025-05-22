@@ -22,19 +22,18 @@ interface YouTubePlaylistItem {
   status: string
 }
 
-export type DiffPayload = TextDiffPayload | YouTubePlaylistDiffPayload;
+export type DiffSummary = TextDiffSummary | YouTubePlaylistDiffSummary;
 
-export interface TextDiffPayload {
-  added: string[],
-  removed: string[],
-  isEmpty: boolean,
+export interface TextDiffSummary {
+  added: number,
+  removed: number
 }
 
-export interface YouTubePlaylistDiffPayload {
-  added: YouTubePlaylistItem[],
-  removed: YouTubePlaylistItem[],
-  changed: YouTubePlaylistItem[],
-  unavailable: YouTubePlaylistItem[],
+export interface YouTubePlaylistDiffSummary {
+  added: number,
+  removed: number,
+  changed: number,
+  unavailable: number,
 }
 
 export interface ObservingEntry {
@@ -42,6 +41,6 @@ export interface ObservingEntry {
   observingId: number,
   occuredAt: string,  
   payload: ObservingPayload,
-  lastDiff: DiffPayload
+  lastDiff: DiffSummary
 }
 

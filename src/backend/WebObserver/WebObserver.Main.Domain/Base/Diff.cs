@@ -6,10 +6,12 @@ public abstract class DiffBase
     public ObservingEntryBase FirstEntry { get; set; } = null!;
     public int SecondEntryId { get; set; }
     public ObservingEntryBase SecondEntry { get; set; } = null!;
+    
+    public required DiffSummary Summary { get; set; }
 }
 
 public class Diff<TPayload> : DiffBase 
     where TPayload : DiffPayload
 {
-    public required TPayload Payload { get; set; }
+    public TPayload Payload { get; set; } = null!;
 }

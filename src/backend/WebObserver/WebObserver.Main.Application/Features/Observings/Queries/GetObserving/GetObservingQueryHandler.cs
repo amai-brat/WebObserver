@@ -23,7 +23,7 @@ public class GetObservingQueryHandler(
             return Result.Fail(new ObservingNotFoundError());
         }
         
-        var observing = await observingRepository.GetByIdWithEntriesAsync(request.ObservingId, cancellationToken);
+        var observing = await observingRepository.GetByIdWithEntriesSummaryAsync(request.ObservingId, cancellationToken);
         return new ObservingResponse
         {
             Observing = observing!.ToDto()
