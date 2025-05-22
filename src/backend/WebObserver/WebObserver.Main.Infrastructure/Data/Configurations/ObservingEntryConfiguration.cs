@@ -22,6 +22,9 @@ public class TextObservingEntryConfiguration : IEntityTypeConfiguration<TextObse
         builder.HasOne(x => x.Payload)
             .WithOne()
             .HasForeignKey<TextPayload>(x => x.ObservingEntryId);
+
+        builder.HasOne(x => x.LastDiff)
+            .WithMany();
     }
 }
 
@@ -32,5 +35,8 @@ public class YouTubePlaylistObservingEntryConfiguration : IEntityTypeConfigurati
         builder.HasOne(x => x.Payload)
             .WithOne()
             .HasForeignKey<YouTubePlaylistPayload>(x => x.ObservingEntryId);
+        
+        builder.HasOne(x => x.LastDiff)
+            .WithMany();
     }
 }

@@ -1,3 +1,4 @@
+using WebObserver.Main.Application.Features.Observings.Queries.Dtos;
 using WebObserver.Main.Application.Features.Observings.Queries.GetAllObservings;
 using WebObserver.Main.Application.Features.Observings.Queries.GetTemplates;
 using WebObserver.Main.Domain.Base;
@@ -52,7 +53,8 @@ public static class ObservingMapper
             LastChangeAt = observing.LastChangeAt,
             Template = TemplateDto.From(observing.Template), 
             CronExpression = observing.CronExpression,
-            PlaylistId = observing.PlaylistId
+            PlaylistId = observing.PlaylistId,
+            Entries = observing.Entries.Select(x => x.ToDto()).ToList()
         };
     }
 
@@ -67,7 +69,8 @@ public static class ObservingMapper
             LastChangeAt = observing.LastChangeAt,
             Template = TemplateDto.From(observing.Template), 
             CronExpression = observing.CronExpression,
-            Url = observing.Url
+            Url = observing.Url,
+            Entries = observing.Entries.Select(x => x.ToDto()).ToList()
         };
     }
 }

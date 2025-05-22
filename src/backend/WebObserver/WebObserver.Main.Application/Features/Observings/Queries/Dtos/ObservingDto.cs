@@ -1,7 +1,10 @@
 using System.Text.Json.Serialization;
 using WebObserver.Main.Application.Features.Observings.Queries.GetTemplates;
+using WebObserver.Main.Domain.Base;
+using WebObserver.Main.Domain.Text;
+using WebObserver.Main.Domain.YouTubePlaylist;
 
-namespace WebObserver.Main.Application.Features.Observings.Queries.GetAllObservings;
+namespace WebObserver.Main.Application.Features.Observings.Queries.Dtos;
 
 [JsonDerivedType(typeof(YouTubePlaylistObservingDto))]
 [JsonDerivedType(typeof(TextObservingDto))]
@@ -18,10 +21,12 @@ public class ObservingDto
 
 public class YouTubePlaylistObservingDto : ObservingDto
 {
+    public IReadOnlyList<ObservingEntryDto<YouTubePlaylistPayload, YouTubePlaylistDiffPayload>>? Entries { get; set; }
     public required string PlaylistId { get; set; }
 }
 
 public class TextObservingDto : ObservingDto
 {
+    public IReadOnlyList<ObservingEntryDto<TextPayload, TextDiffPayload>>? Entries { get; set; }
     public required string Url { get; set; }
 }

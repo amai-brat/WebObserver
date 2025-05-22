@@ -6,6 +6,7 @@ using WebObserver.Main.Application.Features.Observings.Commands.AddObserving;
 using WebObserver.Main.Application.Features.Observings.Commands.EditObserving;
 using WebObserver.Main.Application.Features.Observings.Commands.RemoveObserving;
 using WebObserver.Main.Application.Features.Observings.Queries.GetAllObservings;
+using WebObserver.Main.Application.Features.Observings.Queries.GetObserving;
 
 namespace WebObserver.Main.API.Controllers;
 
@@ -15,6 +16,21 @@ namespace WebObserver.Main.API.Controllers;
 public class ObservingController(
     IMediator mediator) : ControllerBase
 {
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetObserving([FromRoute] int id, CancellationToken cancellationToken)
+    {
+        var userId = this.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await mediator.Send(new GetObservingQuery(userId.Value, id), cancellationToken);
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Errors.ToProblemDetails());
+    }
+    
     [HttpGet]
     public async Task<IActionResult> GetObservings(CancellationToken cancellationToken)
     {
@@ -41,7 +57,7 @@ public class ObservingController(
         
         var result = await mediator.Send(new AddObservingCommand(userId.Value, request));
         return result.IsSuccess 
-            ? Ok(result.Value) 
+            ? Created($"/observings/{result.Value.ObservingId}", result.Value) 
             : BadRequest(result.Errors.ToProblemDetails());
     }
 

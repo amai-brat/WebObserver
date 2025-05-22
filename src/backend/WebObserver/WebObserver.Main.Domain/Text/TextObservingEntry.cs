@@ -2,7 +2,7 @@ using WebObserver.Main.Domain.Base;
 
 namespace WebObserver.Main.Domain.Text;
 
-public class TextObservingEntry : ObservingEntry<TextPayload> 
+public class TextObservingEntry : ObservingEntry<TextPayload, TextDiffPayload> 
 {
         
 }

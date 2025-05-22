@@ -8,10 +8,11 @@ public abstract class ObservingEntryBase
 }
 
 
-public abstract class ObservingEntry<TPayload> : ObservingEntryBase
+public abstract class ObservingEntry<TPayload, TDiffPayload> : ObservingEntryBase
     where TPayload : ObservingPayload
+    where TDiffPayload : DiffPayload
 {
     public required TPayload Payload { get; set; }
 
-    public DiffBase? LastDiff { get; set; }
+    public Diff<TDiffPayload>? LastDiff { get; set; }
 }

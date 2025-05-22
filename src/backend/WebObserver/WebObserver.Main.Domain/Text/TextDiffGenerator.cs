@@ -6,8 +6,8 @@ namespace WebObserver.Main.Domain.Text;
 public class TextDiffGenerator : IDiffGenerator<TextPayload, TextDiffPayload>
 {
     public Diff<TextDiffPayload>? GenerateDiff(
-        ObservingEntry<TextPayload>? firstEntry,
-        ObservingEntry<TextPayload> secondEntry)
+        ObservingEntry<TextPayload, TextDiffPayload>? firstEntry,
+        ObservingEntry<TextPayload, TextDiffPayload> secondEntry)
     {
         if (firstEntry is null)
         {

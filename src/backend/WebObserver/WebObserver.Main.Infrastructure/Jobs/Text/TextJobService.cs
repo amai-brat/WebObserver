@@ -12,7 +12,7 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
 {
     private static bool NeedToNotify(TextObservingEntry entry)
     {
-        if (entry.LastDiff is not Diff<TextDiffPayload> diff)
+        if (entry.LastDiff is not { } diff)
         {
             return false;
         }
@@ -40,34 +40,38 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
             }
 
             var httpClient = httpClientFactory.CreateClient();
-            var entryResult = await CreateEntryAsync(httpClient, textObserving, observingRepo, diffGenerator, cancellationToken);
+            var entryResult = await CreateEntryAsync(httpClient, textObserving, cancellationToken);
             if (entryResult.IsFailed)
             {
                 logger.LogWarning("Couldn't create text entry at {Time} with {Error}", DateTime.UtcNow, string.Join("\n", entryResult.Errors));
                 return;
             }
             
+            var prevEntry = await observingRepo.GetLastEntryByObservingIdAsync<TextPayload, TextDiffPayload>(textObserving.Id, cancellationToken);
+            textObserving.AddEntry(entryResult.Value);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // два SaveChanges, потому что циклическая зависимость между EntryId <=> Diff.EntryId 
+            var diff = diffGenerator.GenerateDiff(prevEntry, entryResult.Value);
+            entryResult.Value.LastDiff = diff;
+            
             observing.LastEntryAt = DateTime.UtcNow;
-            if (entryResult.Value.LastDiff is Diff<TextDiffPayload> { Payload.IsEmpty: false })
+            if (entryResult.Value.LastDiff is { Payload.IsEmpty: false })
             {
                 observing.LastChangeAt = DateTime.UtcNow;
             }
-            
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
             if (NeedToNotify(entryResult.Value))
             {
                 await notifier.NotifyAsync(observing.User, Message.Create(observing.User, observing), cancellationToken);
             }
-            
-            textObserving.AddEntry(entryResult.Value);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 
     private static async Task<Result<TextObservingEntry>> CreateEntryAsync(
         HttpClient httpClient,
         TextObserving textObserving,
-        IObservingRepository observingRepo,
-        IDiffGenerator<TextPayload, TextDiffPayload> diffGenerator,
         CancellationToken cancellationToken = default)
     {
         try
@@ -83,11 +87,6 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
                     Text = text
                 }
             };
-            
-            var lastEntry = await observingRepo.GetLastEntryByObservingIdAsync<TextPayload>(textObserving.Id, cancellationToken);
-            var diff = diffGenerator.GenerateDiff(lastEntry, entry);
-            
-            entry.LastDiff = diff;
             
             return Result.Ok(entry);
         }

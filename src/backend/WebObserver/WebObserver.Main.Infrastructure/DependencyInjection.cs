@@ -46,7 +46,8 @@ public static class DependencyInjection
         {
             b.UseNpgsql(new NpgsqlDataSourceBuilder(configuration.GetConnectionString("Postgres"))
                 .EnableDynamicJson()
-                .Build());
+                .Build(), 
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             b.EnableSensitiveDataLogging();
             b.UseSnakeCaseNamingConvention();
         });

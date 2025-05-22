@@ -7,6 +7,6 @@ public interface IDiffGenerator<TEntryPayload, TDiffPayload>
     where TDiffPayload : DiffPayload
 {
     Diff<TDiffPayload>? GenerateDiff(
-        ObservingEntry<TEntryPayload>? firstEntry,
-        ObservingEntry<TEntryPayload> secondEntry);
+        ObservingEntry<TEntryPayload, TDiffPayload>? firstEntry,
+        ObservingEntry<TEntryPayload, TDiffPayload> secondEntry);
 }

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Repositories;
+using WebObserver.Main.Domain.Text;
+using WebObserver.Main.Domain.YouTubePlaylist;
 
 namespace WebObserver.Main.Infrastructure.Data.Repositories;
 
@@ -14,14 +16,34 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
         return observing;
     }
 
-    public async Task<ObservingEntry<TPayload>?> GetLastEntryByObservingIdAsync<TPayload>(
+    public async Task<ObservingBase?> GetByIdWithEntriesAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var observing = await dbContext.Observings
+            .Include(x => x.Template)
+            .Include(x => (x as TextObserving)!.Entries)
+                .ThenInclude(x => x.Payload)
+            .Include(x => (x as TextObserving)!.Entries)
+                .ThenInclude(x => x.LastDiff)
+                    // .ThenInclude(x => x!.Payload)
+            .Include(x => (x as YouTubePlaylistObserving)!.Entries)
+                .ThenInclude(x => x.Payload)
+            .Include(x => (x as YouTubePlaylistObserving)!.Entries)
+                .ThenInclude(x => x.LastDiff)
+                   // .ThenInclude(x => x!.Payload)
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        
+        return observing;
+    }
+    
+    public async Task<ObservingEntry<TPayload, TDiffPayload>?> GetLastEntryByObservingIdAsync<TPayload, TDiffPayload>(
         int observingId, 
         CancellationToken cancellationToken = default) 
         where TPayload : ObservingPayload
+        where TDiffPayload : DiffPayload
     {
         var entry = await dbContext.ObservingEntries
             .Where(x => x.ObservingId == observingId)
-            .OfType<ObservingEntry<TPayload>>()
+            .OfType<ObservingEntry<TPayload, TDiffPayload>>()
             .Include(x => x.Payload)
             .OrderByDescending(x => x.OccuredAt)
             .FirstOrDefaultAsync(cancellationToken);

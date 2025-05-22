@@ -1,6 +1,10 @@
-﻿using WebObserver.Main.Domain.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using WebObserver.Main.Domain.Text;
+using WebObserver.Main.Infrastructure.Data;
+using WebObserver.Main.Infrastructure.Data.Repositories;
 
-CheckTextGenerator();
+await CheckRepositoryAsync();
 
 return;
 
@@ -36,4 +40,25 @@ void CheckTextGenerator()
     {
         Console.WriteLine($"\t{removed}");
     }
+}
+
+async Task CheckRepositoryAsync()
+{
+    await using var dbContext = new AppDbContext(CreateOptions());
+    var observingRepo = new ObservingRepository(dbContext);
+
+    var observing = await observingRepo.GetByIdWithEntriesAsync(1);
+}
+
+DbContextOptions<AppDbContext> CreateOptions()
+{
+    var b = new DbContextOptionsBuilder<AppDbContext>();
+    b.UseNpgsql(new NpgsqlDataSourceBuilder("User ID=postgres;Password=password;Host=localhost;Port=5432;Database=WebObserver.Main;Pooling=true;Include Error Detail=true")
+            .EnableDynamicJson()
+            .Build(), 
+        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+    b.EnableSensitiveDataLogging();
+    b.UseSnakeCaseNamingConvention();
+    
+    return b.Options;
 }

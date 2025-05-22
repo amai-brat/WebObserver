@@ -35,7 +35,7 @@ public class YouTubePlaylistObservingRequest : BaseObservingRequest
         var match = RegexHelper.YouTubePlaylistIdRegex().Match(PlaylistUrl);
         return match.Success 
             ? match.Groups[1].Value 
-            : Result.Fail(new PlaylistIdMissingError());
+            : Result.Fail(new InvalidPlaylistUrlError());
     }
 }
 
