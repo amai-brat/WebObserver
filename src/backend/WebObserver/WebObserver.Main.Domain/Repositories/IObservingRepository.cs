@@ -13,9 +13,8 @@ public interface IObservingRepository
         int observingId, 
         int entryId,
         CancellationToken cancellationToken = default);
-    Task<ObservingEntry<TPayload, TDiffPayload>?> GetLastEntryByObservingIdAsync<TPayload, TDiffPayload>(
+
+    Task<ObservingEntryBase?> GetLastEntryByObservingIdAsync(
         int observingId,
-        CancellationToken cancellationToken = default) 
-        where TPayload : ObservingPayload 
-        where TDiffPayload : DiffPayload;
+        CancellationToken cancellationToken = default);
 }

@@ -28,7 +28,7 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
             var httpClientFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<TextJobService>>();
             var notifier = scope.ServiceProvider.GetRequiredService<INotifier>();
-            var diffGenerator = scope.ServiceProvider.GetRequiredService<IDiffGenerator<TextPayload, TextDiffPayload>>();
+            var diffGenerator = scope.ServiceProvider.GetRequiredService<IDiffGenerator>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             
             logger.LogInformation("Observing Text {Id} at {Time}", observingId, DateTime.UtcNow);
@@ -47,7 +47,7 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
                 return;
             }
             
-            var prevEntry = await observingRepo.GetLastEntryByObservingIdAsync<TextPayload, TextDiffPayload>(textObserving.Id, cancellationToken);
+            var prevEntry = await observingRepo.GetLastEntryByObservingIdAsync(textObserving.Id, cancellationToken);
             textObserving.AddEntry(entryResult.Value);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -94,9 +94,9 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
     }
     
     private static void CreateAndAttachDiff(
-        IDiffGenerator<TextPayload, TextDiffPayload> diffGenerator, 
-        ObservingEntry<TextPayload, TextDiffPayload>? prevEntry, 
-        TextObservingEntry currentEntry,
+        IDiffGenerator diffGenerator, 
+        ObservingEntryBase? prevEntry, 
+        ObservingEntryBase currentEntry,
         ObservingBase observing)
     {
         var diff = diffGenerator.GenerateDiff(prevEntry, currentEntry);

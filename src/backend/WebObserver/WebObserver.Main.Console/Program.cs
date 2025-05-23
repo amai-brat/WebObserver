@@ -10,43 +10,43 @@ return;
 
 void CheckTextGenerator()
 {
-    var textPayload = new TextPayload
-    {
-        Text = "abobda\nsuka\ndadayaaa\nassss"
-    };
-    var textObservingEntry1 = new TextObservingEntry
-    {
-        Payload = textPayload,
-        PayloadSummary = textPayload.CreateSummary(),
-        DiffSummary = null,
-        
-    };
-
-    var textPayload2 = new TextPayload
-    {
-        Text = "aboba\nsuka\ndadaya"
-    };
-    var textObservingEntry2 = new TextObservingEntry
-    {
-        Payload = textPayload2,
-        PayloadSummary = textPayload2.CreateSummary(),
-        DiffSummary = null
-    };
-
-    var diffGenerator = new TextDiffGenerator();
-    var diff = diffGenerator.GenerateDiff(textObservingEntry1, textObservingEntry2);
-    
-    Console.WriteLine("Added:");
-    foreach (var added in diff!.Payload.Added)
-    {
-        Console.WriteLine($"\t{added}");
-    }
-    
-    Console.WriteLine("Removed:");
-    foreach (var removed in diff.Payload.Removed)
-    {
-        Console.WriteLine($"\t{removed}");
-    }
+    // var textPayload = new TextPayload
+    // {
+    //     Text = "abobda\nsuka\ndadayaaa\nassss"
+    // };
+    // var textObservingEntry1 = new TextObservingEntry
+    // {
+    //     Payload = textPayload,
+    //     PayloadSummary = textPayload.CreateSummary(),
+    //     DiffSummary = null,
+    //     
+    // };
+    //
+    // var textPayload2 = new TextPayload
+    // {
+    //     Text = "aboba\nsuka\ndadaya"
+    // };
+    // var textObservingEntry2 = new TextObservingEntry
+    // {
+    //     Payload = textPayload2,
+    //     PayloadSummary = textPayload2.CreateSummary(),
+    //     DiffSummary = null
+    // };
+    //
+    // var diffGenerator = new TextDiffGenerator();
+    // var diff = diffGenerator.GenerateDiff(textObservingEntry1, textObservingEntry2);
+    //
+    // Console.WriteLine("Added:");
+    // foreach (var added in diff!.Payload.Added)
+    // {
+    //     Console.WriteLine($"\t{added}");
+    // }
+    //
+    // Console.WriteLine("Removed:");
+    // foreach (var removed in diff.Payload.Removed)
+    // {
+    //     Console.WriteLine($"\t{removed}");
+    // }
 }
 
 async Task CheckRepositoryAsync()

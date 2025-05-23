@@ -34,6 +34,13 @@ public class ObservingEntryConfiguration : IEntityTypeConfiguration<ObservingEnt
                 v => JsonSerializer.Serialize(v, _serializerOptions),
                 v => JsonSerializer.Deserialize<ObservingPayloadSummary>(v, _serializerOptions)!);
 
+
+        builder.HasOne(x => x.Payload)
+            .WithOne()
+            .HasForeignKey<ObservingPayload>(x => x.ObservingEntryId);
+        
+        builder.HasOne(x => x.LastDiff)
+            .WithMany();
         
         builder.UseTphMappingStrategy();
     }
@@ -43,10 +50,6 @@ public class TextObservingEntryConfiguration : IEntityTypeConfiguration<TextObse
 {
     public void Configure(EntityTypeBuilder<TextObservingEntry> builder)
     {
-        builder.HasOne(x => x.Payload)
-            .WithOne()
-            .HasForeignKey<TextPayload>(x => x.ObservingEntryId);
-
         builder.HasOne(x => x.LastDiff)
             .WithMany();
     }
@@ -56,10 +59,6 @@ public class YouTubePlaylistObservingEntryConfiguration : IEntityTypeConfigurati
 {
     public void Configure(EntityTypeBuilder<YouTubePlaylistObservingEntry> builder)
     {
-        builder.HasOne(x => x.Payload)
-            .WithOne()
-            .HasForeignKey<YouTubePlaylistPayload>(x => x.ObservingEntryId);
-        
         builder.HasOne(x => x.LastDiff)
             .WithMany();
     }

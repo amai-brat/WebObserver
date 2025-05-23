@@ -60,15 +60,12 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
         return observing;
     }
     
-    public async Task<ObservingEntry<TPayload, TDiffPayload>?> GetLastEntryByObservingIdAsync<TPayload, TDiffPayload>(
+    public async Task<ObservingEntryBase?> GetLastEntryByObservingIdAsync(
         int observingId, 
         CancellationToken cancellationToken = default) 
-        where TPayload : ObservingPayload
-        where TDiffPayload : DiffPayload
     {
         var entry = await dbContext.ObservingEntries
             .Where(x => x.ObservingId == observingId)
-            .OfType<ObservingEntry<TPayload, TDiffPayload>>()
             .Include(x => x.Payload)
             .OrderByDescending(x => x.OccuredAt)
             .FirstOrDefaultAsync(cancellationToken);

@@ -3,19 +3,20 @@ using WebObserver.Main.Domain.Services;
 
 namespace WebObserver.Main.Domain.Text;
 
-public class TextDiffGenerator : IDiffGenerator<TextPayload, TextDiffPayload>
+public class TextDiffGenerator : IDiffGenerator
 {
-    public Diff<TextDiffPayload>? GenerateDiff(
-        ObservingEntry<TextPayload, TextDiffPayload>? firstEntry,
-        ObservingEntry<TextPayload, TextDiffPayload> secondEntry)
+    public DiffBase? GenerateDiff(
+        ObservingEntryBase? firstEntry,
+        ObservingEntryBase secondEntry)
     {
-        if (firstEntry is null)
+        if (firstEntry is not TextObservingEntry textFirstEntry ||
+            secondEntry is not TextObservingEntry textSecondEntry)
         {
             return null;
         }
 
-        var oldText = firstEntry.Payload.Text;
-        var newText = secondEntry.Payload.Text;
+        var oldText = (textFirstEntry.Payload as TextPayload)!.Text;
+        var newText = (textSecondEntry.Payload as TextPayload)!.Text;
 
         var oldLines = SplitIntoLines(oldText);
         var newLines = SplitIntoLines(newText);
@@ -32,7 +33,7 @@ public class TextDiffGenerator : IDiffGenerator<TextPayload, TextDiffPayload>
             Removed = removed
         };
 
-        return new Diff<TextDiffPayload>
+        return new TextDiff
         {
             FirstEntry = firstEntry,
             SecondEntry = secondEntry,

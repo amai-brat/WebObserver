@@ -33,9 +33,7 @@ public abstract class ObservingBase
     }
 }
 
-public abstract class Observing<TPayload, TDiffPayload> : ObservingBase 
-    where TPayload : ObservingPayload
-    where TDiffPayload : DiffPayload
+public abstract class Observing : ObservingBase
 {
     protected Observing() {}
     protected Observing(ObservingTemplate template, string cronExpression)
@@ -44,10 +42,10 @@ public abstract class Observing<TPayload, TDiffPayload> : ObservingBase
         CronExpression = cronExpression;
     }
 
-    protected readonly List<ObservingEntry<TPayload, TDiffPayload>> _entries = [];
-    public IReadOnlyList<ObservingEntry<TPayload, TDiffPayload>> Entries => _entries;
+    protected readonly List<ObservingEntryBase> _entries = [];
+    public IReadOnlyList<ObservingEntryBase> Entries => _entries;
     
-    public virtual void AddEntry(ObservingEntry<TPayload, TDiffPayload> entry)
+    public virtual void AddEntry(ObservingEntryBase entry)
     {
         _entries.Add(entry);
     }

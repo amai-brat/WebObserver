@@ -99,7 +99,7 @@ public static class DependencyInjection
         services.AddScoped<IJobServiceFactory, TextJobServiceFactory>();
         services.AddScoped<IJobServiceFactory, YouTubePlaylistJobServiceFactory>();
 
-        services.AddScoped<IDiffGenerator<TextPayload, TextDiffPayload>, TextDiffGenerator>();
+        services.AddScoped<IDiffGenerator, TextDiffGenerator>();
 
         
         services.AddScoped<IJobServiceFactoryResolver, JobServiceFactoryResolver>();
