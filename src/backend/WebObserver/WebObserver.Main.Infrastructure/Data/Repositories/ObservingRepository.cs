@@ -38,6 +38,11 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
         return entries;
     }
 
+    public Task<ObservingPayload?> GetEntryPayloadAsync(int observingId, int entryId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<ObservingBase?> GetByIdWithEntriesAsync(int id, CancellationToken cancellationToken = default)
     {
         var observing = await dbContext.Observings

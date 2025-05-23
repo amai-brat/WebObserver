@@ -9,6 +9,10 @@ public interface IObservingRepository
     Task<IEnumerable<ObservingEntryBase>?> GetEntriesAsync(
         int observingId, 
         CancellationToken cancellationToken = default);
+    Task<ObservingPayload?> GetEntryPayloadAsync(
+        int observingId, 
+        int entryId,
+        CancellationToken cancellationToken = default);
     Task<ObservingEntry<TPayload, TDiffPayload>?> GetLastEntryByObservingIdAsync<TPayload, TDiffPayload>(
         int observingId,
         CancellationToken cancellationToken = default) 

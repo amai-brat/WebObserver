@@ -8,6 +8,8 @@ using WebObserver.Main.Application.Features.Observings.Commands.RemoveObserving;
 using WebObserver.Main.Application.Features.Observings.Queries.GetAllObservings;
 using WebObserver.Main.Application.Features.Observings.Queries.GetObserving;
 using WebObserver.Main.Application.Features.Observings.Queries.GetObservingEntries;
+using WebObserver.Main.Application.Features.Observings.Queries.GetObservingEntryDiffPayload;
+using WebObserver.Main.Application.Features.Observings.Queries.GetObservingEntryPayload;
 
 namespace WebObserver.Main.API.Controllers;
 
@@ -42,6 +44,42 @@ public class ObservingController(
         }
 
         var result = await mediator.Send(new GetObservingEntriesQuery(userId.Value, id), cancellationToken);
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Errors.ToProblemDetails());
+    }
+    
+    [HttpGet("{observingId:int}/entries/{entryId:int}/payload")]
+    public async Task<IActionResult> GetObservingEntryPayload(
+        [FromRoute] int observingId, 
+        [FromRoute] int entryId, 
+        CancellationToken cancellationToken)
+    {
+        var userId = this.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await mediator.Send(new GetObservingEntryPayloadQuery(userId.Value, observingId, entryId), cancellationToken);
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Errors.ToProblemDetails());
+    }
+    
+    [HttpGet("{observingId:int}/entries/{entryId:int}/diff")]
+    public async Task<IActionResult> GetObservingEntryDiffPayload(
+        [FromRoute] int observingId, 
+        [FromRoute] int entryId, 
+        CancellationToken cancellationToken)
+    {
+        var userId = this.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await mediator.Send(new GetObservingEntryDiffPayloadQuery(userId.Value, observingId, entryId), cancellationToken);
         return result.IsSuccess 
             ? Ok(result.Value) 
             : BadRequest(result.Errors.ToProblemDetails());
