@@ -11,3 +11,4 @@ public sealed class InvalidRequestTypeError(Type expected, Type actual)
 public sealed class PlaylistIdMissingError() : BaseError("Playlist URL or ID is required");
 public sealed class InvalidPlaylistUrlError() : BaseError("Couldn't extract playlist ID from URL");
 public sealed class ObservingNotFoundError() : BaseError("Observing not found");
+public sealed class ObservingEntryNotFoundError() : BaseError("Observing entry not found");

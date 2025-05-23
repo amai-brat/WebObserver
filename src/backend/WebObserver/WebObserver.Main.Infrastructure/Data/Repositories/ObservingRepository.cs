@@ -38,9 +38,14 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
         return entries;
     }
 
-    public Task<ObservingPayload?> GetEntryPayloadAsync(int observingId, int entryId, CancellationToken cancellationToken = default)
+    public async Task<ObservingEntryBase?> GetEntryAsync(int observingId, int entryId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var entry = await dbContext.ObservingEntries
+            .Include(o => o.Payload)
+            .Include(o => o.LastDiff)
+            .FirstOrDefaultAsync(x => x.ObservingId == observingId && x.Id == entryId, cancellationToken);
+        
+        return entry;
     }
 
     public async Task<ObservingBase?> GetByIdWithEntriesAsync(int id, CancellationToken cancellationToken = default)

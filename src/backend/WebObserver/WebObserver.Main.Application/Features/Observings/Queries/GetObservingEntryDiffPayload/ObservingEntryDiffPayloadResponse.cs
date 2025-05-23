@@ -4,5 +4,5 @@ namespace WebObserver.Main.Application.Features.Observings.Queries.GetObservingE
 
 public class ObservingEntryDiffPayloadResponse
 {
-    public required DiffPayload Payload { get; set; }
+    public required DiffPayload? Payload { get; set; }
 }

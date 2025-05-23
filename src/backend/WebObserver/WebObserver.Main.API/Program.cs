@@ -25,8 +25,12 @@ builder.Services.AddSwaggerGenWithBearer();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        // дочерний класс апкастнутый до базового теряет свои поля при сериализации
+        // конвертер ниже апкастит в object => поля сохраняются
         options.JsonSerializerOptions.Converters.Add(new ObjectConverter<DiffSummary>());
+        options.JsonSerializerOptions.Converters.Add(new ObjectConverter<DiffPayload>());
         options.JsonSerializerOptions.Converters.Add(new ObjectConverter<ObservingPayloadSummary>());
+        options.JsonSerializerOptions.Converters.Add(new ObjectConverter<ObservingPayload>());
     });
 
 builder.Services.AddProblemDetails();

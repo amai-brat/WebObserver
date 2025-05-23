@@ -3,13 +3,13 @@ using WebObserver.Main.Application.Cqrs.Queries;
 using WebObserver.Main.Application.Features.Errors;
 using WebObserver.Main.Domain.Repositories;
 
-namespace WebObserver.Main.Application.Features.Observings.Queries.GetObservingEntryPayload;
+namespace WebObserver.Main.Application.Features.Observings.Queries.GetObservingEntryDiffPayload;
 
-public class GetObservingEntryPayloadQueryHandler(
+public class GetObservingEntryDiffPayloadQueryHandler(
     IUserRepository userRepository,
-    IObservingRepository observingRepository) : IQueryHandler<GetObservingEntryPayloadQuery, ObservingEntryPayloadResponse>
+    IObservingRepository observingRepository) : IQueryHandler<GetObservingEntryDiffPayloadQuery, ObservingEntryDiffPayloadResponse>
 {
-    public async Task<Result<ObservingEntryPayloadResponse>> Handle(GetObservingEntryPayloadQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ObservingEntryDiffPayloadResponse>> Handle(GetObservingEntryDiffPayloadQuery request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetByIdWithObservingsAsync(request.UserId, cancellationToken);
         if (user is null)
@@ -21,16 +21,16 @@ public class GetObservingEntryPayloadQueryHandler(
         {
             return Result.Fail(new ObservingNotFoundError());
         }
-
+        
         var entry = await observingRepository.GetEntryAsync(request.ObservingId, request.EntryId, cancellationToken);
         if (entry is null)
         {
             return Result.Fail(new ObservingEntryNotFoundError());
         }
         
-        return new ObservingEntryPayloadResponse
+        return new ObservingEntryDiffPayloadResponse
         {
-            Payload = entry.Payload
+            Payload = entry.LastDiff?.Payload
         };
     }
 }

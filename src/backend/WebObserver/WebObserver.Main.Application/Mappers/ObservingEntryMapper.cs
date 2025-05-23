@@ -10,7 +10,7 @@ public static class ObservingEntryMapper
         return new ObservingEntryDto
         {
             Id = observingEntry.Id,
-            ObservingId = observingEntry.Id,
+            ObservingId = observingEntry.ObservingId,
             OccuredAt = observingEntry.OccuredAt,
             PayloadSummary = observingEntry.PayloadSummary,
             LastDiff = observingEntry.DiffSummary
