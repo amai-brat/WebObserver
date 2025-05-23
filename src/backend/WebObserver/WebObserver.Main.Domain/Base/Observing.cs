@@ -31,19 +31,16 @@ public abstract class ObservingBase
             _cronExpression = value;
         }
     }
-}
-
-public abstract class Observing : ObservingBase
-{
-    protected Observing() {}
-    protected Observing(ObservingTemplate template, string cronExpression)
+    
+    protected readonly List<ObservingEntryBase> _entries = [];
+    public IReadOnlyList<ObservingEntryBase> Entries => _entries;
+    
+    protected ObservingBase() {}
+    protected ObservingBase(ObservingTemplate template, string cronExpression)
     {
         Template = template;
         CronExpression = cronExpression;
     }
-
-    protected readonly List<ObservingEntryBase> _entries = [];
-    public IReadOnlyList<ObservingEntryBase> Entries => _entries;
     
     public virtual void AddEntry(ObservingEntryBase entry)
     {

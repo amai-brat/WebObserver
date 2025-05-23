@@ -2,7 +2,7 @@ using WebObserver.Main.Domain.Base;
 
 namespace WebObserver.Main.Domain.YouTubePlaylist;
 
-public class YouTubePlaylistObserving : Observing
+public class YouTubePlaylistObserving : ObservingBase
 {
     protected YouTubePlaylistObserving() { }
     
