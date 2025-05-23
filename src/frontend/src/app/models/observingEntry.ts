@@ -22,14 +22,27 @@ interface YouTubePlaylistItem {
   status: string
 }
 
+export type ObservingPayloadSummary = TextPayloadSummary | YouTubePlaylistPayloadSummary;
+export interface TextPayloadSummary {
+  $type: "Text",
+  length: number,
+  linesCount: number,
+}
+export interface YouTubePlaylistPayloadSummary {
+  $type: "YouTubePlaylist"
+  itemsCount: number,
+}
+
 export type DiffSummary = TextDiffSummary | YouTubePlaylistDiffSummary;
 
 export interface TextDiffSummary {
+  $type: "Text",
   added: number,
   removed: number
 }
 
 export interface YouTubePlaylistDiffSummary {
+  $type: "YouTubePlaylist"
   added: number,
   removed: number,
   changed: number,
@@ -40,7 +53,7 @@ export interface ObservingEntry {
   id: number,
   observingId: number,
   occuredAt: string,  
-  payload: ObservingPayload,
+  payloadSummary: ObservingPayloadSummary,
   lastDiff: DiffSummary
 }
 

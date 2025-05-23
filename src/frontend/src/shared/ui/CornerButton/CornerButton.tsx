@@ -1,11 +1,11 @@
-import type { FC } from "react";
-import { FaPlus } from 'react-icons/fa';
+import type { FC, JSX } from "react";
 
 interface CornerButtonProps {
   onClick: () => void;
+  children: JSX.Element
 }
 
-export const CornerButton: FC<CornerButtonProps> = ({ onClick }) => {
+export const CornerButton: FC<CornerButtonProps> = ({ onClick, children }) => {
   return (
     <button
         type="button"
@@ -13,7 +13,7 @@ export const CornerButton: FC<CornerButtonProps> = ({ onClick }) => {
         className="fixed bottom-8 right-8 bg-primary-darker text-white p-4 rounded-full 
                  shadow-lg hover:bg-blue-700 transition-colors duration-200"
       >
-        <FaPlus size={24} />
+        {children}
       </button>
   );
 }

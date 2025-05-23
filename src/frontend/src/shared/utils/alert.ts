@@ -40,3 +40,7 @@ export const alertError = (error: Error | string) => {
 export const alertSuccess = (message: string) => {
   toast(message, { type: "success" });
 }
+
+export const alertInfo = (message: string) => {
+  toast(message, { type: "info" });
+}
