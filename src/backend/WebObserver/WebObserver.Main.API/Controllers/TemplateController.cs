@@ -11,6 +11,7 @@ public class TemplateController(
     IMediator mediator) : ControllerBase
 {
     [HttpGet]
+    [ResponseCache(Duration = 3600)]
     public async Task<IActionResult> GetTemplates(CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetTemplatesQuery(), cancellationToken);

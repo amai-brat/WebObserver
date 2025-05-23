@@ -43,7 +43,6 @@ const get = async (observingId: number, abortSignal?: AbortSignal): Promise<Obse
   return data.observing;
 }
 
-
 const getAll = async (abortSignal?: AbortSignal): Promise<ObservingBase[]> => {
   const { data } = await apiClient.get<GetAllObservingsResponse>(ENDPOINTS.OBSERVING.GET_ALL, {
     signal: abortSignal
@@ -72,11 +71,32 @@ const edit = async (observingId: number, dto: EditObservingDto, abortSignal?: Ab
   return data;
 }
 
+const getEntryDiffPayload = async (observingId: number, entryId: number, abortSignal?: AbortSignal): Promise<object> => {
+  const { data } = await apiClient.get<object>(ENDPOINTS.OBSERVING.ENTRY_DIFF_PAYLOAD
+    .replace(":observingId", `${observingId}`)
+    .replace(":entryId", `${entryId}`),
+    {
+      signal: abortSignal
+    });
+  return data;
+}
+
+const getEntryPayload = async (observingId: number, entryId: number, abortSignal?: AbortSignal): Promise<object> => {
+  const { data } = await apiClient.get<object>(ENDPOINTS.OBSERVING.ENTRY_PAYLOAD
+    .replace(":observingId", `${observingId}`)
+    .replace(":entryId", `${entryId}`),
+    {
+      signal: abortSignal
+    });
+  return data;
+}
 
 export const observingApi = {
   get,
   getAll,
   create,
   remove,
-  edit
+  edit,
+  getEntryPayload,
+  getEntryDiffPayload
 }

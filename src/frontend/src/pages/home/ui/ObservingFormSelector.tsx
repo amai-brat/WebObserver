@@ -4,10 +4,11 @@ import { templateApi } from "../../../shared/api/templateApi";
 import { alertError } from "../../../shared/utils/alert";
 import { YouTubePlaylistObservingForm } from "./forms/YouTubePlaylistObservingForm";
 import { TextObservingForm } from "./forms/TextObservingForm";
+import axios from "axios";
 
 interface ObservingFormSelectorProps {
   isModalOpen: boolean;
-  setIsModalOpen: (value: boolean) => void; 
+  setIsModalOpen: (value: boolean) => void;
 }
 
 export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ setIsModalOpen }) => {
@@ -19,10 +20,12 @@ export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ se
 
     void (async () => {
       try {
-        const result = await templateApi.getAll();
+        const result = await templateApi.getAll(ac.signal);
         setTemplates(result);
       } catch (e) {
-        alertError(e as Error);
+        if (!axios.isCancel(e)) {
+          alertError(e as Error);
+        }
       }
     })()
 
@@ -38,12 +41,12 @@ export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ se
 
   const renderForm = () => {
     if (!selectedTemplate) return null;
-    
+
     switch (selectedTemplate.type) {
       case 'YouTubePlaylist':
-        return <YouTubePlaylistObservingForm template={selectedTemplate} onSuccessSubmit={() => setIsModalOpen(false)}/>;
+        return <YouTubePlaylistObservingForm template={selectedTemplate} onSuccessSubmit={() => setIsModalOpen(false)} />;
       case 'Text':
-        return <TextObservingForm template={selectedTemplate} onSuccessSubmit={() => setIsModalOpen(false)}/>;
+        return <TextObservingForm template={selectedTemplate} onSuccessSubmit={() => setIsModalOpen(false)} />;
       default:
         return <div>Unknown template type</div>;
     }
@@ -60,9 +63,8 @@ export const ObservingFormSelector: React.FC<ObservingFormSelectorProps> = ({ se
                 key={t.id}
                 title={t.name}
                 onClick={() => handleTemplateSelect(t.id)}
-                className={`mb-1 cursor-pointer hover:font-bold overflow-hidden overflow-ellipsis text-nowrap ${
-                  selectedTemplate?.id === t.id ? 'font-bold' : ''
-                }`}>
+                className={`mb-1 cursor-pointer hover:font-bold overflow-hidden overflow-ellipsis text-nowrap ${selectedTemplate?.id === t.id ? 'font-bold' : ''
+                  }`}>
                 {t.name}
               </div>))}
           </div>
