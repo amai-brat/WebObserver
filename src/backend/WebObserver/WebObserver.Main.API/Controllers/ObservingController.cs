@@ -7,6 +7,7 @@ using WebObserver.Main.Application.Features.Observings.Commands.EditObserving;
 using WebObserver.Main.Application.Features.Observings.Commands.RemoveObserving;
 using WebObserver.Main.Application.Features.Observings.Queries.GetAllObservings;
 using WebObserver.Main.Application.Features.Observings.Queries.GetObserving;
+using WebObserver.Main.Application.Features.Observings.Queries.GetObservingEntries;
 
 namespace WebObserver.Main.API.Controllers;
 
@@ -30,6 +31,22 @@ public class ObservingController(
             ? Ok(result.Value) 
             : BadRequest(result.Errors.ToProblemDetails());
     }
+    
+    [HttpGet("{id:int}/entries")]
+    public async Task<IActionResult> GetObservingEntries([FromRoute] int id, CancellationToken cancellationToken)
+    {
+        var userId = this.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await mediator.Send(new GetObservingEntriesQuery(userId.Value, id), cancellationToken);
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Errors.ToProblemDetails());
+    }
+    
     
     [HttpGet]
     public async Task<IActionResult> GetObservings(CancellationToken cancellationToken)

@@ -6,6 +6,9 @@ public interface IObservingRepository
 {
     Task<ObservingBase?> GetByIdWithUserAsync(int id, CancellationToken cancellationToken = default);
     Task<ObservingBase?> GetByIdWithEntriesSummaryAsync(int id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ObservingEntryBase>?> GetEntriesAsync(
+        int observingId, 
+        CancellationToken cancellationToken = default);
     Task<ObservingEntry<TPayload, TDiffPayload>?> GetLastEntryByObservingIdAsync<TPayload, TDiffPayload>(
         int observingId,
         CancellationToken cancellationToken = default) 

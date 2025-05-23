@@ -54,8 +54,7 @@ public static class ObservingMapper
             CronExpression = observing.CronExpression,
             PlaylistId = observing.PlaylistId,
             Entries = observing.Entries
-                .Select(x => 
-                    x.ToDto<YouTubePlaylistPayload, YouTubePlaylistPayloadSummary, YouTubePlaylistDiffPayload, YouTubePlaylistDiffSummary>())
+                .Select(x => x.ToDto())
                 .ToList()
         };
     }
@@ -73,8 +72,7 @@ public static class ObservingMapper
             CronExpression = observing.CronExpression,
             Url = observing.Url,
             Entries = observing.Entries
-                .Select(x => 
-                    x.ToDto<TextPayload, TextPayloadSummary, TextDiffPayload, TextDiffSummary>())
+                .Select(x => x.ToDto())
                 .ToList()
         };
     }

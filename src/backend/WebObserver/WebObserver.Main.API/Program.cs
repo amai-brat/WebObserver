@@ -3,6 +3,7 @@ using WebObserver.Main.API;
 using WebObserver.Main.API.Helpers;
 using WebObserver.Main.Application;
 using WebObserver.Main.Application.Options;
+using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Infrastructure;
 using WebObserver.Main.Infrastructure.Data;
 
@@ -21,7 +22,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddSwaggerGenWithBearer();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new ObjectConverter<DiffSummary>());
+        options.JsonSerializerOptions.Converters.Add(new ObjectConverter<ObservingPayloadSummary>());
+    });
+
 builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>() 

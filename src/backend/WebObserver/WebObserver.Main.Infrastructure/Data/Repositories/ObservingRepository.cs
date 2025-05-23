@@ -28,7 +28,16 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
         
         return observing;
     }
-    
+
+    public async Task<IEnumerable<ObservingEntryBase>?> GetEntriesAsync(int observingId, CancellationToken cancellationToken = default)
+    {
+        var entries = await dbContext.ObservingEntries
+            .Where(x => x.ObservingId == observingId)
+            .ToListAsync(cancellationToken: cancellationToken);
+
+        return entries;
+    }
+
     public async Task<ObservingBase?> GetByIdWithEntriesAsync(int id, CancellationToken cancellationToken = default)
     {
         var observing = await dbContext.Observings
