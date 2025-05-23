@@ -22,12 +22,12 @@ public class ObservingDto
 
 public class YouTubePlaylistObservingDto : ObservingDto
 {
-    public IReadOnlyList<ObservingEntryDto<YouTubePlaylistDiffSummary>>? Entries { get; set; }
+    public IReadOnlyList<ObservingEntryDto<YouTubePlaylistPayloadSummary, YouTubePlaylistDiffSummary>>? Entries { get; set; }
     public required string PlaylistId { get; set; }
 }
 
 public class TextObservingDto : ObservingDto
 {
-    public IReadOnlyList<ObservingEntryDto<TextDiffSummary>>? Entries { get; set; }
+    public IReadOnlyList<ObservingEntryDto<TextPayloadSummary, TextDiffSummary>>? Entries { get; set; }
     public required string Url { get; set; }
 }

@@ -10,21 +10,26 @@ return;
 
 void CheckTextGenerator()
 {
+    var textPayload = new TextPayload
+    {
+        Text = "abobda\nsuka\ndadayaaa\nassss"
+    };
     var textObservingEntry1 = new TextObservingEntry
     {
-        Payload = new TextPayload
-        {
-            Text = "abobda\nsuka\ndadayaaa\nassss"
-        },
-        DiffSummary = null
+        Payload = textPayload,
+        PayloadSummary = textPayload.CreateSummary(),
+        DiffSummary = null,
+        
     };
 
+    var textPayload2 = new TextPayload
+    {
+        Text = "aboba\nsuka\ndadaya"
+    };
     var textObservingEntry2 = new TextObservingEntry
     {
-        Payload = new TextPayload
-        {
-            Text = "aboba\nsuka\ndadaya"
-        },
+        Payload = textPayload2,
+        PayloadSummary = textPayload2.CreateSummary(),
         DiffSummary = null
     };
 

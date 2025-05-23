@@ -47,15 +47,17 @@ public class YouTubePlaylistJobService(IServiceScopeFactory scopeFactory) : IJob
         {
             return itemsResult.ToResult<YouTubePlaylistObservingEntry>();
         }
-        
+
+        var payload = new YouTubePlaylistPayload
+        {
+            Items = itemsResult.Value
+        };
         var entry = new YouTubePlaylistObservingEntry
         {
             ObservingId = ytObserving.Id,
             OccuredAt = DateTime.UtcNow,
-            Payload = new YouTubePlaylistPayload
-            {
-                Items = itemsResult.Value
-            },
+            Payload = payload,
+            PayloadSummary = payload.CreateSummary(),
             // TODO: diff
             LastDiff = null,
             DiffSummary = null

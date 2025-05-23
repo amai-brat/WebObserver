@@ -55,7 +55,7 @@ public static class ObservingMapper
             PlaylistId = observing.PlaylistId,
             Entries = observing.Entries
                 .Select(x => 
-                    x.ToDto<YouTubePlaylistPayload, YouTubePlaylistDiffPayload, YouTubePlaylistDiffSummary>())
+                    x.ToDto<YouTubePlaylistPayload, YouTubePlaylistPayloadSummary, YouTubePlaylistDiffPayload, YouTubePlaylistDiffSummary>())
                 .ToList()
         };
     }
@@ -74,7 +74,7 @@ public static class ObservingMapper
             Url = observing.Url,
             Entries = observing.Entries
                 .Select(x => 
-                    x.ToDto<TextPayload, TextDiffPayload, TextDiffSummary>())
+                    x.ToDto<TextPayload, TextPayloadSummary, TextDiffPayload, TextDiffSummary>())
                 .ToList()
         };
     }

@@ -71,14 +71,17 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
         {
             var text = await httpClient.GetStringAsync(textObserving.Url, cancellationToken);
 
+            var payload = new TextPayload
+            {
+                Text = text
+            };
+            
             var entry = new TextObservingEntry
             {
                 ObservingId = textObserving.Id,
                 OccuredAt = DateTime.UtcNow,
-                Payload = new TextPayload
-                {
-                    Text = text
-                },
+                Payload = payload,
+                PayloadSummary = payload.CreateSummary(),
                 DiffSummary = null
             };
             

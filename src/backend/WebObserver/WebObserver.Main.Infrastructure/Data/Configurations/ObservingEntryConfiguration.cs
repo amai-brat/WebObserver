@@ -12,7 +12,10 @@ public class ObservingEntryConfiguration : IEntityTypeConfiguration<ObservingEnt
 {
     private readonly JsonSerializerOptions _serializerOptions = new()
     {
-        Converters = { new DiffSummaryConverter() },
+        Converters = { 
+            new DerivedConverter<DiffSummary>(), 
+            new DerivedConverter<ObservingPayloadSummary>() 
+        },
     };
 
     public void Configure(EntityTypeBuilder<ObservingEntryBase> builder)
@@ -24,6 +27,13 @@ public class ObservingEntryConfiguration : IEntityTypeConfiguration<ObservingEnt
             .HasConversion(
                 v => JsonSerializer.Serialize(v, _serializerOptions),
                 v => JsonSerializer.Deserialize<DiffSummary>(v, _serializerOptions)!);
+
+        builder.Property(x => x.PayloadSummary)
+            .HasColumnType("jsonb")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, _serializerOptions),
+                v => JsonSerializer.Deserialize<ObservingPayloadSummary>(v, _serializerOptions)!);
+
         
         builder.UseTphMappingStrategy();
     }
