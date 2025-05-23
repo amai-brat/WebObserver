@@ -57,7 +57,8 @@ public class YouTubePlaylistJobService(IServiceScopeFactory scopeFactory) : IJob
                 Items = itemsResult.Value
             },
             // TODO: diff
-            LastDiff = null
+            LastDiff = null,
+            DiffSummary = null
         };
 
         return Result.Ok(entry);

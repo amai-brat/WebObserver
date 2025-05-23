@@ -14,7 +14,7 @@ using WebObserver.Main.Infrastructure.Data;
 namespace WebObserver.Main.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250522210938_AddDiffSummary")]
+    [Migration("20250523072206_AddDiffSummary")]
     partial class AddDiffSummary
     {
         /// <inheritdoc />
@@ -55,11 +55,6 @@ namespace WebObserver.Main.Infrastructure.Migrations
                     b.Property<int>("SecondEntryId")
                         .HasColumnType("integer")
                         .HasColumnName("second_entry_id");
-
-                    b.Property<string>("Summary")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("summary");
 
                     b.HasKey("FirstEntryId", "SecondEntryId");
 
@@ -138,6 +133,10 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DiffSummary")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("diff_summary");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()

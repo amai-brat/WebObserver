@@ -16,6 +16,7 @@ void CheckTextGenerator()
         {
             Text = "abobda\nsuka\ndadayaaa\nassss"
         },
+        DiffSummary = null
     };
 
     var textObservingEntry2 = new TextObservingEntry
@@ -24,6 +25,7 @@ void CheckTextGenerator()
         {
             Text = "aboba\nsuka\ndadaya"
         },
+        DiffSummary = null
     };
 
     var diffGenerator = new TextDiffGenerator();

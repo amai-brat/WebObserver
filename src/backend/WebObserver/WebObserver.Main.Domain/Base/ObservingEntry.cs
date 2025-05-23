@@ -5,6 +5,8 @@ public abstract class ObservingEntryBase
     public int Id { get; set; }
     public int ObservingId { get; set; }
     public DateTime OccuredAt { get; set; }
+    
+    public required DiffSummary? DiffSummary { get; set; }
 }
 
 

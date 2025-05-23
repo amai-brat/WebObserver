@@ -16,7 +16,7 @@ public static class ObservingEntryMapper
             Id = observingEntry.Id,
             ObservingId = observingEntry.ObservingId,
             OccuredAt = observingEntry.OccuredAt,
-            LastDiff = observingEntry.LastDiff?.Summary as TDiffSummary,
+            LastDiff = observingEntry.DiffSummary as TDiffSummary,
         };
         
         return res;

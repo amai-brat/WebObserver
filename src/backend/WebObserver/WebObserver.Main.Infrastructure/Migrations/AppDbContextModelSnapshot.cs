@@ -53,11 +53,6 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("second_entry_id");
 
-                    b.Property<string>("Summary")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("summary");
-
                     b.HasKey("FirstEntryId", "SecondEntryId");
 
                     b.HasIndex("SecondEntryId");
@@ -135,6 +130,10 @@ namespace WebObserver.Main.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DiffSummary")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("diff_summary");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()

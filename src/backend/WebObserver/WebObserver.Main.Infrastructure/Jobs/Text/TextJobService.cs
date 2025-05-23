@@ -51,15 +51,8 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
             textObserving.AddEntry(entryResult.Value);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // два SaveChanges, потому что циклическая зависимость между EntryId <=> Diff.EntryId 
-            var diff = diffGenerator.GenerateDiff(prevEntry, entryResult.Value);
-            entryResult.Value.LastDiff = diff;
-            
-            observing.LastEntryAt = DateTime.UtcNow;
-            if (entryResult.Value.LastDiff is { Payload.IsEmpty: false })
-            {
-                observing.LastChangeAt = DateTime.UtcNow;
-            }
+            // два SaveChanges, потому что циклическая зависимость между Entry.Id <=> Diff.EntryId 
+            CreateAndAttachDiff(diffGenerator, prevEntry, entryResult.Value, observing);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             if (NeedToNotify(entryResult.Value))
@@ -85,7 +78,8 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
                 Payload = new TextPayload
                 {
                     Text = text
-                }
+                },
+                DiffSummary = null
             };
             
             return Result.Ok(entry);
@@ -94,5 +88,22 @@ public class TextJobService(IServiceScopeFactory scopeFactory) : IJobService
         {
             return Result.Fail<TextObservingEntry>($"Error fetching text: {e.Message}");
         }
+    }
+    
+    private static void CreateAndAttachDiff(
+        IDiffGenerator<TextPayload, TextDiffPayload> diffGenerator, 
+        ObservingEntry<TextPayload, TextDiffPayload>? prevEntry, 
+        TextObservingEntry currentEntry,
+        ObservingBase observing)
+    {
+        var diff = diffGenerator.GenerateDiff(prevEntry, currentEntry);
+        currentEntry.LastDiff = diff;
+            
+        observing.LastEntryAt = DateTime.UtcNow;
+        if (currentEntry.LastDiff is { Payload.IsEmpty: false })
+        {
+            observing.LastChangeAt = DateTime.UtcNow;
+        }
+        currentEntry.DiffSummary = diff?.Payload.CreateSummary();
     }
 }
