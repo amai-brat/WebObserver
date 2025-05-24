@@ -1,5 +1,6 @@
 import { ENDPOINTS } from "../../app/consts/endpoints";
 import type { ObservingBase } from "../../app/models/observing";
+import type { ObservingEntry } from "../../app/models/observingEntry";
 import apiClient from "../utils/apiClient";
 
 
@@ -33,6 +34,11 @@ interface GetObservingResponse {
 
 interface GetAllObservingsResponse {
   observings: ObservingBase[]
+}
+
+interface GetEntriesResponse {
+  length: number,
+  entries: ObservingEntry[]
 }
 
 
@@ -71,6 +77,17 @@ const edit = async (observingId: number, dto: EditObservingDto, abortSignal?: Ab
   return data;
 }
 
+const getEntries = async (observingId: number, page: number, pageSize: number, abortSignal?: AbortSignal): Promise<GetEntriesResponse> => {
+  const { data } = await apiClient.get<GetEntriesResponse>(ENDPOINTS.OBSERVING.ENTRIES
+    .replace(":id", `${observingId}`),
+    {
+      params: { page, pageSize },
+      signal: abortSignal
+    });
+  return data;
+}
+
+
 const getEntryDiffPayload = async (observingId: number, entryId: number, abortSignal?: AbortSignal): Promise<object> => {
   const { data } = await apiClient.get<object>(ENDPOINTS.OBSERVING.ENTRY_DIFF_PAYLOAD
     .replace(":observingId", `${observingId}`)
@@ -97,6 +114,7 @@ export const observingApi = {
   create,
   remove,
   edit,
+  getEntries,
   getEntryPayload,
   getEntryDiffPayload
 }

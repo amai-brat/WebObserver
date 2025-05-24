@@ -4,6 +4,6 @@ namespace WebObserver.Main.Application.Features.Observings.Queries.GetObservingE
 
 public class ObservingEntriesResponse
 {
+    public required int Length { get; set; }
     public required List<ObservingEntryDto> Entries { get; set; }
-
 }

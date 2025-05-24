@@ -24,12 +24,19 @@ public class GetObservingEntriesQueryHandler(
             return Result.Fail(new ObservingNotFoundError());
         }
         
-        var entries = await observingRepository.GetEntriesAsync(request.ObservingId, cancellationToken);
+        var count = await observingRepository.GetEntriesCountAsync(request.ObservingId, cancellationToken);
+        var entries = await observingRepository.GetEntriesAsync(
+            request.ObservingId, 
+            request.Page, 
+            request.PageSize, 
+            cancellationToken);
+        
         return new ObservingEntriesResponse
         {
+            Length = count,
             Entries = entries?
                 .Select(x => x.ToDto())
-                .ToList() ?? []
+                .ToList() ?? [],
         };
     }
 }

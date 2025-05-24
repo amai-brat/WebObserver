@@ -1,9 +1,12 @@
 import axios from "axios";
+import { setupCache } from 'axios-cache-interceptor';
 import { getToken } from "./token";
 
 const apiClient = axios.create({
-  withCredentials: true
+  withCredentials: true,
 });
+
+const cachedApiClient = setupCache(apiClient);
 
 apiClient.interceptors.request.use(config => {
   config.headers.Authorization = `Bearer ${getToken()}`;
@@ -12,4 +15,4 @@ apiClient.interceptors.request.use(config => {
   return Promise.reject(error as Error);
 });
 
-export default apiClient;
+export default cachedApiClient;

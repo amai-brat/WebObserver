@@ -35,7 +35,12 @@ public class ObservingController(
     }
     
     [HttpGet("{id:int}/entries")]
-    public async Task<IActionResult> GetObservingEntries([FromRoute] int id, CancellationToken cancellationToken)
+    [ResponseCache(Duration = 30)]
+    public async Task<IActionResult> GetObservingEntries(
+        [FromRoute] int id,
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        CancellationToken cancellationToken)
     {
         var userId = this.GetUserId();
         if (userId is null)
@@ -43,13 +48,14 @@ public class ObservingController(
             return Unauthorized();
         }
 
-        var result = await mediator.Send(new GetObservingEntriesQuery(userId.Value, id), cancellationToken);
+        var result = await mediator.Send(new GetObservingEntriesQuery(userId.Value, id, page, pageSize), cancellationToken);
         return result.IsSuccess 
             ? Ok(result.Value) 
             : BadRequest(result.Errors.ToProblemDetails());
     }
     
     [HttpGet("{observingId:int}/entries/{entryId:int}/payload")]
+    [ResponseCache(Duration = 3600 * 24)]
     public async Task<IActionResult> GetObservingEntryPayload(
         [FromRoute] int observingId, 
         [FromRoute] int entryId, 
@@ -68,6 +74,7 @@ public class ObservingController(
     }
     
     [HttpGet("{observingId:int}/entries/{entryId:int}/diff")]
+    [ResponseCache(Duration = 3600 * 24)]
     public async Task<IActionResult> GetObservingEntryDiffPayload(
         [FromRoute] int observingId, 
         [FromRoute] int entryId, 
