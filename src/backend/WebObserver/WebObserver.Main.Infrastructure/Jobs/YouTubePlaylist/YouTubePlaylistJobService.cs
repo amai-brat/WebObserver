@@ -29,15 +29,17 @@ public class YouTubePlaylistJobService(IServiceScopeFactory scopeFactory) : IJob
             if (entryResult.IsFailed)
             {
                 logger.LogWarning("Couldn't create YouTube playlist entry at {Time} with {Error}", DateTime.UtcNow, string.Join("\n", entryResult.Errors));
+                return;
             }
             
+            var prevEntry = await observingRepo.GetLastEntryByObservingIdAsync(ytObserving.Id, cancellationToken);
             ytObserving.AddEntry(entryResult.Value);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
         
     }
 
-    public async Task<Result<YouTubePlaylistObservingEntry>> CreateEntryAsync(
+    private static async Task<Result<YouTubePlaylistObservingEntry>> CreateEntryAsync(
         YouTubeService youTubeService, 
         YouTubePlaylistObserving ytObserving, 
         CancellationToken cancellationToken = default)
@@ -52,14 +54,13 @@ public class YouTubePlaylistJobService(IServiceScopeFactory scopeFactory) : IJob
         {
             Items = itemsResult.Value
         };
+        
         var entry = new YouTubePlaylistObservingEntry
         {
             ObservingId = ytObserving.Id,
             OccuredAt = DateTime.UtcNow,
             Payload = payload,
             PayloadSummary = payload.CreateSummary(),
-            // TODO: diff
-            LastDiff = null,
             DiffSummary = null
         };
 

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Npgsql;
 using WebObserver.Main.Application.Options;
 using WebObserver.Main.Application.Services.Ifaces;
+using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Domain.Services;
 using WebObserver.Main.Domain.Text;
@@ -96,10 +97,11 @@ public static class DependencyInjection
 
     private static IServiceCollection AddJobServices(this IServiceCollection services)
     {
+        services.AddScoped<TextObservingJobHelper>();
         services.AddScoped<IJobServiceFactory, TextJobServiceFactory>();
         services.AddScoped<IJobServiceFactory, YouTubePlaylistJobServiceFactory>();
 
-        services.AddScoped<IDiffGenerator, TextDiffGenerator>();
+        services.AddKeyedScoped<IDiffGenerator, TextDiffGenerator>(nameof(ObservingType.Text));
 
         
         services.AddScoped<IJobServiceFactoryResolver, JobServiceFactoryResolver>();
