@@ -9,7 +9,8 @@ public class YouTubePlaylistPayload : ObservingPayload
     {
         return new YouTubePlaylistPayloadSummary
         {
-            ItemsCount = Items.Count
+            ItemsCount = Items.Count,
+            UnavailableItemsCount = Items.Count(x => !x.IsAvailable),
         };
     }
 }
@@ -17,4 +18,5 @@ public class YouTubePlaylistPayload : ObservingPayload
 public class YouTubePlaylistPayloadSummary : ObservingPayloadSummary
 {
     public int ItemsCount { get; set; }
+    public int UnavailableItemsCount { get; set; }
 }

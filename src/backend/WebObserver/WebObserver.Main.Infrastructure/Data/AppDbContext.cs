@@ -12,6 +12,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ObservingTemplate> Templates => Set<ObservingTemplate>();
     public DbSet<ObservingBase> Observings => Set<ObservingBase>();
     public DbSet<ObservingEntryBase> ObservingEntries => Set<ObservingEntryBase>();
+    public DbSet<YouTubePlaylistItem> YouTubePlaylistItems => Set<YouTubePlaylistItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,7 +27,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         mb.Entity<YouTubePlaylistObservingTemplate>().HasData(new YouTubePlaylistObservingTemplate
         {
             Id = 1,
-            Name = "YouTube плейлист",
+            Name = "Плейлист YouTube",
             Description = "Отслеживает за изменениями YouTube плейлиста: добавление, удаление, изменение ролика, недоступность ролика",
         });
 

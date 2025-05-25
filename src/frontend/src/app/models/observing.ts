@@ -33,6 +33,7 @@ export interface TextObserving extends ObservingBase{
 }
 
 export interface YouTubePlaylistObserving extends ObservingBase {
-  playlistId: string
+  playlistId: string,
+  playlistName?: string;
 }
 

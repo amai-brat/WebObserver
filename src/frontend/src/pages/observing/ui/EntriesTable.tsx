@@ -79,7 +79,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ observing }) => {
       <PayloadViewer observingId={observing.id} entryId={currentEntryId ?? 0}></PayloadViewer>
     </Modal>
     <div className="bg-secondary-lighter max-w-5xl w-full mx-auto shadow rounded">
-      <div className="bg-primary grid grid-cols-[2fr_2fr_2fr] gap-1 px-4 text-center text-white border-b-2 border-secondary rounded">
+      <div className="bg-primary grid grid-cols-[2fr_2fr_2fr] px-4 text-center text-white border-b-2 border-secondary rounded">
         <div className="p-4 border-r-1 border-secondary line-clamp-2 overflow-hidden">Время проверки</div>
         <div className="p-4 border-r-1 border-secondary line-clamp-2 overflow-hidden">Объём изменений</div>
         <div className="p-4 line-clamp-2 overflow-hidden">Состояние ресурса</div>
@@ -100,7 +100,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ observing }) => {
               {factory.createDiffSummaryElement(e.lastDiff)}
             </div>
             <div
-              className="py-4 px-1 text-centerline-clamp-2 overflow-hidden hover:bg-secondary cursor-pointer"
+              className="py-4 px-1 text-centerline-clamp-2 overflow-hidden text-nowrap text-ellipsis hover:bg-secondary cursor-pointer"
               onClick={() => void onPayloadSummaryClick(e.id)}
             >
               {factory.createPayloadSummaryElement(e.payloadSummary)}
@@ -120,7 +120,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ observing }) => {
         <div className="text-white text-xl select-none">{page}</div>
         <FaArrowRight className="cursor-pointer" color="white" size={24}
           onClick={() => setPage(prev => {
-            if ((prev + 1) * pageSize > entriesCount) {
+            if (prev * pageSize > entriesCount) {
               return prev;
             }
             return prev + 1;

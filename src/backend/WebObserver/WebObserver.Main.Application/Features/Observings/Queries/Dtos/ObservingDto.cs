@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using WebObserver.Main.Application.Features.Observings.Queries.GetTemplates;
 using WebObserver.Main.Domain.Base;
+using WebObserver.Main.Domain.YouTubePlaylist;
 
 namespace WebObserver.Main.Application.Features.Observings.Queries.Dtos;
 
@@ -21,7 +22,9 @@ public class ObservingDto
 public class YouTubePlaylistObservingDto : ObservingDto
 {
     public IReadOnlyList<ObservingEntryDto>? Entries { get; set; }
+    public IReadOnlyList<UnavailableYouTubePlaylistItem> UnavailableItems { get; set; } = [];
     public required string PlaylistId { get; set; }
+    public required string? PlaylistName { get; set; }
 }
 
 public class TextObservingDto : ObservingDto

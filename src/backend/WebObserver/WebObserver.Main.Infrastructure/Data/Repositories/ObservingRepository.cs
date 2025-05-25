@@ -11,6 +11,10 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
     public async Task<ObservingBase?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         var observing = await dbContext.Observings
+            .Include(x => (x as YouTubePlaylistObserving)!.UnavailableItems)
+                .ThenInclude(x => x.CurrentItem)
+            .Include(x => (x as YouTubePlaylistObserving)!.UnavailableItems)
+                .ThenInclude(x => x.SavedItem)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         return observing;
     }
@@ -70,6 +74,7 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
     {
         var entry = await dbContext.ObservingEntries
             .Include(o => o.Payload)
+                .ThenInclude(p => (p as YouTubePlaylistPayload)!.Items)
             .Include(o => o.LastDiff)
             .FirstOrDefaultAsync(x => x.ObservingId == observingId && x.Id == entryId, cancellationToken);
         
@@ -100,6 +105,7 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
         var entry = await dbContext.ObservingEntries
             .Where(x => x.ObservingId == observingId)
             .Include(x => x.Payload)
+                .ThenInclude(x => (x as YouTubePlaylistPayload)!.Items)
             .OrderByDescending(x => x.OccuredAt)
             .FirstOrDefaultAsync(cancellationToken);
         return entry;

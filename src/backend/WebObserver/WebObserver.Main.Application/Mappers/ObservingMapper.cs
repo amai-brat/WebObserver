@@ -53,9 +53,11 @@ public static class ObservingMapper
             Template = TemplateDto.From(observing.Template), 
             CronExpression = observing.CronExpression,
             PlaylistId = observing.PlaylistId,
+            PlaylistName = observing.PlaylistName,
             Entries = observing.Entries
                 .Select(x => x.ToDto())
-                .ToList()
+                .ToList(),
+            UnavailableItems = observing.UnavailableItems
         };
     }
 

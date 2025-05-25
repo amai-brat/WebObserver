@@ -51,7 +51,8 @@ const get = async (observingId: number, abortSignal?: AbortSignal): Promise<Obse
 
 const getAll = async (abortSignal?: AbortSignal): Promise<ObservingBase[]> => {
   const { data } = await apiClient.get<GetAllObservingsResponse>(ENDPOINTS.OBSERVING.GET_ALL, {
-    signal: abortSignal
+    signal: abortSignal,
+    cache: false,
   });
   return data.observings;
 }

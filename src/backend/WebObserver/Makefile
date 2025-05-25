@@ -22,7 +22,7 @@ remove:
 
 apply:
 	@echo "Применение миграций"
-	@dotnet ef database update --project $(PROJECT) --startup-project $(STARTUP_PROJECT)
+	@dotnet ef database update $(MIGRATION_NAME) --project $(PROJECT) --startup-project $(STARTUP_PROJECT)
 
 revert:
 	@echo "Откат до миграции: $(MIGRATION_NAME)"

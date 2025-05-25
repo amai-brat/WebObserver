@@ -5,6 +5,8 @@ public class YouTubePlaylistItem
     private static readonly List<string> UnavailableStatuses = ["private", "privacyStatusUnspecified"];
     
     public int Id { get; set; }
+    public DateTime SavedAt { get; set; } = DateTime.UtcNow;
+    
     public required string VideoId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }

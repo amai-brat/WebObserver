@@ -7,12 +7,12 @@ const convertFrom = (observing: ObservingBase): ObservingWithResourceId => {
     case "YouTubePlaylist":
       return {
         ...observing,
-        resourceId: (observing as YouTubePlaylistObserving).playlistId
+        resourceId: getResourceId(observing)
       };
     case "Text":
       return {
         ...observing,
-        resourceId: (observing as TextObserving).url
+        resourceId: getResourceId(observing)
       };
     default:
       return { ...observing, resourceId: '' };
@@ -22,9 +22,15 @@ const convertFrom = (observing: ObservingBase): ObservingWithResourceId => {
 const getResourceId = (observing: ObservingBase): string => {
   switch (observing.$type) {
     case "YouTubePlaylist":
-      return (observing as YouTubePlaylistObserving).playlistId
+      {
+        const o = observing as YouTubePlaylistObserving;
+        return `${o.playlistName ?? ''} : ${o.playlistId}`;
+      }
     case "Text":
-      return (observing as TextObserving).url
+      {
+        const o = observing as TextObserving;
+        return `${o.url}`;
+      }
     default:
       return ''
   }

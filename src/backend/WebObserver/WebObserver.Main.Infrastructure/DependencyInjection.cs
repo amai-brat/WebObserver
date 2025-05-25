@@ -16,6 +16,7 @@ using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Domain.Services;
 using WebObserver.Main.Domain.Text;
+using WebObserver.Main.Domain.YouTubePlaylist;
 using WebObserver.Main.Infrastructure.Data;
 using WebObserver.Main.Infrastructure.Data.Repositories;
 using WebObserver.Main.Infrastructure.Jobs;
@@ -56,6 +57,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IObservingTemplateRepository, ObservingTemplateRepository>();
         services.AddScoped<IObservingRepository, ObservingRepository>();
+        services.AddScoped<IYouTubePlaylistRepository, YouTubePlaylistRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         return services;
@@ -98,11 +100,13 @@ public static class DependencyInjection
     private static IServiceCollection AddJobServices(this IServiceCollection services)
     {
         services.AddScoped<TextObservingJobHelper>();
+        services.AddScoped<YouTubePlaylistJobHelper>();
+        
         services.AddScoped<IJobServiceFactory, TextJobServiceFactory>();
         services.AddScoped<IJobServiceFactory, YouTubePlaylistJobServiceFactory>();
 
         services.AddKeyedScoped<IDiffGenerator, TextDiffGenerator>(nameof(ObservingType.Text));
-
+        services.AddKeyedScoped<IDiffGenerator, YouTubePlaylistDiffGenerator>(nameof(ObservingType.YouTubePlaylist));
         
         services.AddScoped<IJobServiceFactoryResolver, JobServiceFactoryResolver>();
         services.AddScoped<IObservingJobOrchestrator, ObservingJobOrchestrator>();

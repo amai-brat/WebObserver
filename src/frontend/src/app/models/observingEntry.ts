@@ -31,6 +31,7 @@ export interface TextPayloadSummary {
 export interface YouTubePlaylistPayloadSummary {
   $type: "YouTubePlaylist"
   itemsCount: number,
+  unavailableItemsCount: number,
 }
 
 export type DiffSummary = TextDiffSummary | YouTubePlaylistDiffSummary;

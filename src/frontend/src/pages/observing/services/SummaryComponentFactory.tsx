@@ -48,7 +48,7 @@ export class YouTubePlaylistSummaryFactory implements SummaryElementFactory {
     const t = summary as YouTubePlaylistPayloadSummary;
     return (
       <div className="flex flex-row gap-1 justify-center">
-        <div>Количество роликов: {t.itemsCount}</div>
+        <div>Количество роликов: {t.itemsCount}, недоступных: {t.unavailableItemsCount}</div>
       </div>
     );
   }
@@ -57,17 +57,15 @@ export class YouTubePlaylistSummaryFactory implements SummaryElementFactory {
     if (!summary) return fallbackWhenNull();
 
     const t = summary as YouTubePlaylistDiffSummary;
-    if (summary.$type == "YouTubePlaylist") {
-      return (
-        <div className="flex flex-row gap-1 justify-center">
-          <div className="text-green-500">+{t.added}</div>
-          <div className="text-red-800">-{t.removed}</div>
-          <div className="text-yellow-500">~{t.changed}</div>
-          <div className="text-red-500">x{t.unavailable}</div>
-        </div>
-      );
-    }
-    throw new Error('Invalid youtube playlist summary');
+    return (
+      <div className="flex flex-row gap-1 justify-center"
+        title={`добавлено: ${t.added}, удалено: ${t.removed}, изменено: ${t.changed}, стало недоступно: ${t.unavailable}`}>
+        <div className="text-green-500">+{t.added}</div>
+        <div className="text-red-800">-{t.removed}</div>
+        <div className="text-yellow-500">~{t.changed}</div>
+        <div className="text-red-500">×{t.unavailable}</div>
+      </div>
+    );
   }
 }
 

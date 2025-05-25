@@ -16,7 +16,7 @@ public abstract class ObservingJobHelperBase<TObserving, TEntry, TPayload>(
     where TEntry : ObservingEntryBase
     where TPayload : class
 {
-    public virtual async Task ObserveInternalAsync(int observingId, CancellationToken ct)
+    public async Task ObserveInternalAsync(int observingId, CancellationToken ct)
     {
         logger.LogInformation("Observing {Type} {Id}", typeof(TObserving).Name, observingId);
         
@@ -39,11 +39,19 @@ public abstract class ObservingJobHelperBase<TObserving, TEntry, TPayload>(
         var entry = CreateEntry(observing, payloadResult.Value, now);
         observing.AddEntry(entry);
         await unitOfWork.SaveChangesAsync(ct);
-        
+
+        // два SaveChanges, потому что циклическая зависимость между Entry.Id <=> Diff.EntryId 
         AttachDiffToEntry(prevEntry, entry, observing);
         observing.LastEntryAt = now;
         await unitOfWork.SaveChangesAsync(ct);
         
+        // дочерние классы переопределяют этот метод, если необходимо
+        var save = await MutateObservingAsync(observing, entry, ct);
+        if (save)
+        {
+            await unitOfWork.SaveChangesAsync(ct);
+        }
+
         if (NeedToNotify(entry))
         {
             await notifier.NotifyAsync(observing.User, Message.Create(observing.User, observing), ct);
@@ -69,4 +77,16 @@ public abstract class ObservingJobHelperBase<TObserving, TEntry, TPayload>(
 
     protected virtual bool NeedToNotify(TEntry entry) => 
         entry.LastDiff is { Payload.IsEmpty: false };
+
+    /// <summary>
+    /// Дополнительно изменить специфичные для типа <paramref name="observing"/> свойства
+    /// </summary>
+    /// <param name="observing">Наблюдение</param>
+    /// <param name="entry">Текущая запись наблюдения</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>bool - необходимо ли сохранять в базе данных</returns>
+    protected virtual Task<bool> MutateObservingAsync(TObserving observing, TEntry entry, CancellationToken ct)
+    {
+        return Task.FromResult(false);
+    }
 }
