@@ -1,5 +1,5 @@
 import type { ObservingBase } from "../../../app/models/observing";
-import { getSummaryFactory } from "../services/SummaryComponentFactory";
+import { type ObservingElementFactory } from "../services/ObservingElementFactory";
 import { useEffect, useState } from "react";
 import { Modal } from "../../../shared/ui/Modal/Modal";
 import { DiffViewer } from "./DiffViewer";
@@ -13,19 +13,20 @@ import { CornerButton } from "../../../shared/ui/CornerButton/CornerButton";
 import { IoMdRefresh } from "react-icons/io";
 
 interface EntriesTableProps {
-  observing: ObservingBase
+  observing: ObservingBase,
+  elementFactory: ObservingElementFactory
 }
 
-export const EntriesTable: React.FC<EntriesTableProps> = ({ observing }) => {
+export const EntriesTable: React.FC<EntriesTableProps> = ({ observing, elementFactory }) => {
   const pageSize = 5;
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [entriesCount, setEntriesCount] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [entries, setEntries] = useState<ObservingEntry[]>();
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
   const [isPayloadModalOpen, setIsPayloadModalOpen] = useState(false);
   const [currentEntryId, setCurrentEntryId] = useState<number>();
-  const factory = getSummaryFactory(observing.$type);
 
   const onDiffSummaryClick = (entryId: number) => {
     setCurrentEntryId(entryId)
@@ -39,6 +40,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ observing }) => {
 
   const fetchData = async (observingId: number, page: number, pageSize: number, ac?: AbortSignal) => {
     try {
+      setIsLoading(true);
       const res = await observingApi.getEntries(observingId, page, pageSize, ac);
       setEntries(res.entries);
       setEntriesCount(res.length);
@@ -46,6 +48,9 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ observing }) => {
       if (!axios.isCancel(e)) {
         alertError(e as Error);
       }
+    }
+    finally {
+      setIsLoading(false);
     }
   }
 
@@ -79,31 +84,32 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ observing }) => {
       <PayloadViewer observingId={observing.id} entryId={currentEntryId ?? 0}></PayloadViewer>
     </Modal>
     <div className="bg-secondary-lighter max-w-5xl w-full mx-auto shadow rounded">
-      <div className="bg-primary grid grid-cols-[2fr_2fr_2fr] px-4 text-center text-white border-b-2 border-secondary rounded">
+      <div className="bg-primary grid grid-cols-[2fr_2fr_2fr] text-center text-white border-b-2 border-secondary rounded">
         <div className="p-4 border-r-1 border-secondary line-clamp-2 overflow-hidden">Время проверки</div>
         <div className="p-4 border-r-1 border-secondary line-clamp-2 overflow-hidden">Объём изменений</div>
         <div className="p-4 line-clamp-2 overflow-hidden">Состояние ресурса</div>
       </div>
-      {entries?.map(e => (
+      {isLoading && <div>Загрузка...</div>}
+      {!isLoading && entries?.map(e => (
         <div key={e.id}>
-          <div className="grid grid-cols-[2fr_2fr_2fr] px-4 items-center">
+          <div className="grid grid-cols-[2fr_2fr_2fr] items-center">
             <div
-              className="py-4 px-1 text-center border-r-1 border-secondary line-clamp-2 overflow-hidden"
+              className="py-4 px-1 h-full text-center border-r-1 border-secondary"
               title={new Date(e.occuredAt).toLocaleString()}
             >
               {new Date(e.occuredAt).toLocaleString()}
             </div>
             <div
-              className="py-4 px-1 text-center border-r-1 border-secondary line-clamp-2 overflow-hidden hover:bg-secondary cursor-pointer"
+              className="py-4 px-1 h-full text-center border-r-1 border-secondary hover:bg-secondary cursor-pointer"
               onClick={() => void onDiffSummaryClick(e.id)}
             >
-              {factory.createDiffSummaryElement(e.lastDiff)}
+              {elementFactory.createDiffSummaryElement(e.lastDiff)}
             </div>
             <div
-              className="py-4 px-1 text-centerline-clamp-2 overflow-hidden text-nowrap text-ellipsis hover:bg-secondary cursor-pointer"
+              className="py-4 px-2 h-full w-full text-center hover:bg-secondary cursor-pointer"
               onClick={() => void onPayloadSummaryClick(e.id)}
             >
-              {factory.createPayloadSummaryElement(e.payloadSummary)}
+              {elementFactory.createPayloadSummaryElement(e.payloadSummary)}
             </div>
           </div>
           <hr className="text-secondary" />

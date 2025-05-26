@@ -78,33 +78,46 @@ public class YouTubePlaylistJobHelper(
         CancellationToken ct)
     {
         observing.PlaylistName = await GetPlaylistNameAsync(observing.PlaylistId, ct);
-        observing.UnavailableItems = await GetUnavailableItemsAsync(entry, ct);
+        await MutateUnavailableItemsAsync(observing, entry, ct);
         
         return true;
     }
 
-    private async Task<List<UnavailableYouTubePlaylistItem>> GetUnavailableItemsAsync(
+    private async Task MutateUnavailableItemsAsync(
+        YouTubePlaylistObserving observing,
         YouTubePlaylistObservingEntry entry,
         CancellationToken ct = default)
     {
         var unavailables = (entry.Payload as YouTubePlaylistPayload)!.Items
             .Where(x => !x.IsAvailable)
+            .DistinctBy(x => x.VideoId)
             .ToList();
         var savedItems = await youtubePlaylistRepo
             .GetItems(unavailables.Select(x => x.VideoId), ct);
         
-        var result = new List<UnavailableYouTubePlaylistItem>();
+        // удаляю тех, которые стали заново доступны
+        var toRemove = observing.UnavailableItems
+            .Where(item => unavailables.All(x => x.VideoId != item.CurrentItem.VideoId));
+        foreach (var item in toRemove)
+        {
+            observing.UnavailableItems.Remove(item);
+        }
+        
+        // добавляю, что стало недоступно
         foreach (var item in unavailables)
         {
+            if (observing.UnavailableItems.Any(x => x.CurrentItem.VideoId == item.VideoId))
+            {
+                continue;
+            }
+            
             TryGetSavedItem(item.VideoId, savedItems, skipUnavailable: true, out var savedItem);
-            result.Add(new UnavailableYouTubePlaylistItem
+            observing.UnavailableItems.Add(new UnavailableYouTubePlaylistItem
             {
                 SavedItem = savedItem,
                 CurrentItem = item
             });
         }
-
-        return result;
     }
 
     private async Task<string> GetPlaylistNameAsync(string playlistId, CancellationToken ct)

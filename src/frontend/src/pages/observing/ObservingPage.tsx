@@ -7,10 +7,12 @@ import axios from "axios";
 import { ObservingWithResourceId } from "../../app/models/observingWithResourceId";
 import { FrequencyChanger } from "./ui/FrequencyChanger";
 import { EntriesTable } from "./ui/EntriesTable";
+import { getSummaryFactory } from "./services/ObservingElementFactory";
 
 export const ObservingPage = () => {
   const { id } = useParams();
   const [observing, setObserving] = useState<ObservingBase>();
+  const factory = getSummaryFactory(observing?.$type ?? "NONE");
 
   const fetchData = async (id: number, ac?: AbortSignal) => {
     try {
@@ -38,11 +40,14 @@ export const ObservingPage = () => {
       {observing &&
         <div className="flex flex-col gap-2">
           <div
-            className="bg-secondary-lighter p-4 text-2xl rounded-2xl overflow-hidden text-ellipsis text-nowrap"
+            className="bg-secondary-lighter p-4 text-2xl rounded-2xl w-full"
             title={ObservingWithResourceId.getResourceId(observing)}
-          >{observing.template.name}: {ObservingWithResourceId.getResourceId(observing)}</div>
+          >{observing.template.name}: {"\n"} 
+            {ObservingWithResourceId.getResourceId(observing)}
+          </div>
           <FrequencyChanger observing={observing} />
-          <EntriesTable observing={observing} />
+          <EntriesTable observing={observing} elementFactory={factory} />
+          {factory.createAdditionalBlock(observing)}
         </div>}
     </div>);
 }

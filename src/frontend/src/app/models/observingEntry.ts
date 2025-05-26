@@ -10,7 +10,7 @@ export interface YouTubePlaylistObservingPayload extends ObservingPayload {
   items: YouTubePlaylistItem[],
 }
 
-interface YouTubePlaylistItem {
+export interface YouTubePlaylistItem {
   id: number,
   videoId: string,
   title: string,
@@ -20,6 +20,14 @@ interface YouTubePlaylistItem {
   publishedAt: string,
   videoOwnerChannelTitle: string,
   status: string
+}
+
+export interface UnavailableYouTubePlaylistItem {
+  id: number,
+  savedItemId?: number,
+  savedItem?: YouTubePlaylistItem,
+  currentItemId: number,
+  currentItem: YouTubePlaylistItem,
 }
 
 export type ObservingPayloadSummary = TextPayloadSummary | YouTubePlaylistPayloadSummary;

@@ -44,7 +44,8 @@ interface GetEntriesResponse {
 
 const get = async (observingId: number, abortSignal?: AbortSignal): Promise<ObservingBase> => {
   const { data } = await apiClient.get<GetObservingResponse>(`${ENDPOINTS.OBSERVING.GET}${observingId}`, {
-    signal: abortSignal
+    signal: abortSignal,
+    cache: false
   });
   return data.observing;
 }

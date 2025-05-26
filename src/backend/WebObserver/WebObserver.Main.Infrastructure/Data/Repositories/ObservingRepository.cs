@@ -23,6 +23,10 @@ public class ObservingRepository(AppDbContext dbContext) : IObservingRepository
     {
         var observing = await dbContext.Observings
             .Include(x => x.User)
+            .Include(x => (x as YouTubePlaylistObserving)!.UnavailableItems)
+                .ThenInclude(x => x.CurrentItem)
+            .Include(x => (x as YouTubePlaylistObserving)!.UnavailableItems)
+                .ThenInclude(x => x.SavedItem)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         return observing;
     }

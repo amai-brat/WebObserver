@@ -42,5 +42,5 @@ export const alertSuccess = (message: string) => {
 }
 
 export const alertInfo = (message: string) => {
-  toast(message, { type: "info" });
+  toast(message, { type: "info", autoClose: 1000 });
 }

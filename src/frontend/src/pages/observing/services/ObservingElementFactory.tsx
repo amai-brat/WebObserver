@@ -1,10 +1,12 @@
 import type { JSX } from "react";
 import type { DiffSummary, ObservingPayloadSummary, TextDiffSummary, TextPayloadSummary, YouTubePlaylistDiffSummary, YouTubePlaylistPayloadSummary } from "../../../app/models/observingEntry";
-import type { ObservingTypeValue } from "../../../app/models/observing";
+import type { ObservingBase, ObservingTypeValue, YouTubePlaylistObserving } from "../../../app/models/observing";
+import { UnavailableItems } from "../ui/YouTubePlaylist/UnavailableItems";
 
-export interface SummaryElementFactory {
+export interface ObservingElementFactory {
   createPayloadSummaryElement(summary: ObservingPayloadSummary): JSX.Element;
   createDiffSummaryElement(summary?: DiffSummary): JSX.Element;
+  createAdditionalBlock(observing: ObservingBase): JSX.Element;
 }
 
 const fallbackWhenNull = () => {
@@ -15,7 +17,7 @@ const fallbackWhenNull = () => {
   )
 }
 
-export class TextSummaryFactory implements SummaryElementFactory {
+export class TextElementFactory implements ObservingElementFactory {
   createPayloadSummaryElement(summary: ObservingPayloadSummary): JSX.Element {
     if (!summary) return fallbackWhenNull();
 
@@ -39,9 +41,13 @@ export class TextSummaryFactory implements SummaryElementFactory {
       </div>
     );
   }
+
+  createAdditionalBlock(): JSX.Element {
+    return <div />
+  }
 }
 
-export class YouTubePlaylistSummaryFactory implements SummaryElementFactory {
+export class YouTubePlaylistElementFactory implements ObservingElementFactory {
   createPayloadSummaryElement(summary: ObservingPayloadSummary): JSX.Element {
     if (!summary) return fallbackWhenNull();
 
@@ -67,16 +73,35 @@ export class YouTubePlaylistSummaryFactory implements SummaryElementFactory {
       </div>
     );
   }
+
+  createAdditionalBlock(observing: YouTubePlaylistObserving): JSX.Element {
+    return <div>
+      <UnavailableItems items={observing.unavailableItems}/>
+    </div>
+  }
 }
 
-export function getSummaryFactory(type: ObservingTypeValue): SummaryElementFactory {
+class NoneElementFactory implements ObservingElementFactory {
+  createPayloadSummaryElement(): JSX.Element {
+    return <div />;
+  }
+  createDiffSummaryElement(): JSX.Element {
+    return <div />;
+  }
+  createAdditionalBlock(): JSX.Element {
+    return <div />;
+  }
+}
+
+export function getSummaryFactory(type: ObservingTypeValue): ObservingElementFactory {
   switch (type) {
     case 'Text':
-      return new TextSummaryFactory();
+      return new TextElementFactory();
     case 'YouTubePlaylist':
-      return new YouTubePlaylistSummaryFactory();
+      return new YouTubePlaylistElementFactory();
     case 'NONE':
+      return new NoneElementFactory();
     default:
-      throw new Error(`No factory found for ${type}`);
+      throw new Error(`No factory found}`);
   }
 }

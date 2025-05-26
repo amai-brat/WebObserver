@@ -1,4 +1,4 @@
-import type { ObservingEntry } from "./observingEntry";
+import type { ObservingEntry, UnavailableYouTubePlaylistItem } from "./observingEntry";
 
 // templateId -> templateType
 export type ObservingTypeKey = keyof typeof ObservingTypes; // 0 | 1 | 2
@@ -35,5 +35,6 @@ export interface TextObserving extends ObservingBase{
 export interface YouTubePlaylistObserving extends ObservingBase {
   playlistId: string,
   playlistName?: string;
+  unavailableItems: UnavailableYouTubePlaylistItem[]
 }
 

@@ -33,7 +33,7 @@ export const FrequencyChanger: React.FC<FrequencyChangerProps> = ({ observing })
 
   return (
     <form
-      className="bg-secondary-lighter p-2 rounded-2xl max-w-fit flex flex-row gap-2 items-center"
+      className="bg-secondary-lighter p-2 max-w-fit rounded-2xl flex flex-row gap-2 items-center"
       onSubmit={formik.handleSubmit}
     >
       <label htmlFor={"cronExpression"}>Частота проверки: </label>
