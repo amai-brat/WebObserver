@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Hangfire;
@@ -37,7 +38,6 @@ public static class DependencyInjection
             .AddData(configuration)
             .AddObservingApis()
             .AddHangfire(configuration)
-            .AddHttpClient()
             .AddJobServices()
             .AddNotifiers(environment);
     }
@@ -75,7 +75,14 @@ public static class DependencyInjection
                 ApplicationName = "YouTubePlaylistFetcher"
             });
         });
-        
+
+        services.AddHttpClient<HttpClient>(c =>
+        {
+            c.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue
+            {
+                NoCache = true
+            };
+        });
         
         return services;
     }
@@ -120,6 +127,12 @@ public static class DependencyInjection
         {
             services.AddScoped<INotifier, FakeNotifier>();
         }
+        else if (environment.IsProduction())
+        {
+            services.AddScoped<INotifier, EmailNotifier>();
+        }
+        
+        services.AddScoped<IEmailSender, EmailSender>();
         
         return services;
     }

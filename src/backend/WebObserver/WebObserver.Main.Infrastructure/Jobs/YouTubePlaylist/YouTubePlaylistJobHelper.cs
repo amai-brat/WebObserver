@@ -3,6 +3,7 @@ using FluentResults;
 using Google.Apis.YouTube.v3;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Domain.Services;
@@ -18,11 +19,13 @@ public class YouTubePlaylistJobHelper(
     IYouTubePlaylistRepository youtubePlaylistRepo,
     ILogger<YouTubePlaylistJobHelper> logger,
     INotifier notifier,
+    IMessageFactory messageFactory,
     IUnitOfWork unitOfWork)
     : ObservingJobHelperBase<YouTubePlaylistObserving, YouTubePlaylistObservingEntry, YouTubePlaylistPayload>(
         observingRepo,
         logger,
         notifier,
+        messageFactory,
         diffGenerator,
         unitOfWork)
 {

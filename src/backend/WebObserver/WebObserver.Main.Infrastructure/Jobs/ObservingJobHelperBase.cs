@@ -1,5 +1,6 @@
 using FluentResults;
 using Microsoft.Extensions.Logging;
+using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Domain.Services;
@@ -10,6 +11,7 @@ public abstract class ObservingJobHelperBase<TObserving, TEntry, TPayload>(
     IObservingRepository observingRepo,
     ILogger logger,
     INotifier notifier,
+    IMessageFactory messageFactory,
     IDiffGenerator diffGenerator,
     IUnitOfWork unitOfWork)
     where TObserving : ObservingBase
@@ -54,7 +56,8 @@ public abstract class ObservingJobHelperBase<TObserving, TEntry, TPayload>(
 
         if (NeedToNotify(entry))
         {
-            await notifier.NotifyAsync(observing.User, Message.Create(observing.User, observing), ct);
+            var message = messageFactory.CreateObservingChangedMessage(observing.User, observing);
+            await notifier.NotifyAsync(observing.User, message, ct);
         }
     }
 

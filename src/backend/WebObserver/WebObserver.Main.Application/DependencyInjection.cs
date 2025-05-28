@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(Assembly);
         
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IMessageFactory, MessageFactory>();
         
         services.AddScoped<IObservingFactory, TextObservingFactory>();
         services.AddScoped<IObservingFactory, YouTubePlaylistObservingFactory>();

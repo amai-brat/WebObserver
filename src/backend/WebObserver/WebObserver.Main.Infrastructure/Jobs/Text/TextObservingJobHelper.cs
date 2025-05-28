@@ -1,6 +1,7 @@
 using FluentResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebObserver.Main.Application.Services.Ifaces;
 using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Repositories;
 using WebObserver.Main.Domain.Services;
@@ -14,11 +15,13 @@ public sealed class TextObservingJobHelper(
     IHttpClientFactory httpClientFactory,
     ILogger<TextObservingJobHelper> logger,
     INotifier notifier,
+    IMessageFactory messageFactory,
     IUnitOfWork unitOfWork)
     : ObservingJobHelperBase<TextObserving, TextObservingEntry, TextPayload>(
         observingRepo,
         logger,
         notifier,
+        messageFactory,
         diffGenerator,
         unitOfWork)
 {
