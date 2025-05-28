@@ -11,9 +11,7 @@ public class YouTubePlaylistItemEqualityComparer : IEqualityComparer<YouTubePlay
         return x.VideoId == y.VideoId &&
                x.Title == y.Title && 
                x.Description == y.Description &&
-               x.Position == y.Position &&
                x.ThumbnailUrl == y.ThumbnailUrl &&
-               x.PublishedAt.Equals(y.PublishedAt) &&
                x.VideoOwnerChannelTitle == y.VideoOwnerChannelTitle &&
                x.Status == y.Status;
     }
@@ -24,9 +22,7 @@ public class YouTubePlaylistItemEqualityComparer : IEqualityComparer<YouTubePlay
         hashCode.Add(obj.VideoId);
         hashCode.Add(obj.Title);
         hashCode.Add(obj.Description);
-        hashCode.Add(obj.Position);
         hashCode.Add(obj.ThumbnailUrl);
-        hashCode.Add(obj.PublishedAt);
         hashCode.Add(obj.VideoOwnerChannelTitle);
         hashCode.Add(obj.Status);
         return hashCode.ToHashCode();
