@@ -8,6 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["WebObserver.Main.API/WebObserver.Main.API.csproj", "WebObserver.Main.API/"]
+COPY ["WebObserver.Main.Domain/WebObserver.Main.Domain.csproj", "WebObserver.Main.Domain/"]
+COPY ["WebObserver.Main.Application/WebObserver.Main.Application.csproj", "WebObserver.Main.Application/"]
+COPY ["WebObserver.Main.Infrastructure/WebObserver.Main.Infrastructure.csproj", "WebObserver.Main.Infrastructure/"]
 RUN dotnet restore "WebObserver.Main.API/WebObserver.Main.API.csproj"
 COPY . .
 WORKDIR "/src/WebObserver.Main.API"

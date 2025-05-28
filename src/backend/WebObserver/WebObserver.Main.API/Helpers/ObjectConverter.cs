@@ -9,7 +9,7 @@ public class ObjectConverter<T> : JsonConverter<T>
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         // предполагается, что конвертер только для отправки на фронт
-        throw new NotImplementedException();
+        throw new InvalidOperationException();
     }
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)

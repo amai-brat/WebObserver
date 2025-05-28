@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - PGUSER=postgres
+    volumes:
+      - webobserver-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  main-api:
+    hostname: main-api
+    build:
+      context: "./src/backend/WebObserver"
+      dockerfile: "WebObserver.Main.API/Dockerfile"
+    ports:
+      - "8080:8080"
+    env_file:
+      - "./src/backend/WebObserver/.env"
+    depends_on:
+      postgres:
+        condition: service_healthy
+            
+
+  frontend:
+    hostname: frontend
+    build:
+      context: "./src/frontend"
+      dockerfile: "Dockerfile"
+    ports:
+      - "80:80"
+    depends_on:
+      - main-api
+
+volumes:
+  webobserver-postgres:
+  

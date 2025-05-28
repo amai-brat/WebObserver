@@ -1,4 +1,6 @@
 using Hangfire;
+using Hangfire.Dashboard;
+using Microsoft.AspNetCore.HttpOverrides;
 using WebObserver.Main.API;
 using WebObserver.Main.API.Helpers;
 using WebObserver.Main.Application;
@@ -17,6 +19,8 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.Configure<YouTubeOptions>(builder.Configuration.GetSection("YouTube"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
+builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection("Frontend"));
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplication();
@@ -44,6 +48,11 @@ var app = builder.Build();
 await Database.CreateHangfireDatabaseAsync(builder.Configuration);
 await Migrator.MigrateAsync(app.Services);
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -51,5 +60,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-app.MapHangfireDashboard("/hangfire");
+app.MapHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = [new AnonymousAuthorizaiontFilter()]
+    });
+
 app.Run();
