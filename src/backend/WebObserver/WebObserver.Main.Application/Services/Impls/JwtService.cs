@@ -5,11 +5,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebObserver.Main.Application.Options;
 using WebObserver.Main.Application.Services.Ifaces;
+using WebObserver.Main.Domain.Base;
 using WebObserver.Main.Domain.Entities;
 
 namespace WebObserver.Main.Application.Services.Impls;
 
-public class TokenService(IOptionsMonitor<JwtOptions> monitor) : ITokenService
+public class JwtService(IOptionsMonitor<JwtOptions> monitor) : IJwtService
 {
     private readonly JwtOptions _jwtOptions = monitor.CurrentValue;
     
@@ -22,6 +23,9 @@ public class TokenService(IOptionsMonitor<JwtOptions> monitor) : ITokenService
             new (JwtRegisteredClaimNames.Name, user.Name),
             new (JwtRegisteredClaimNames.Email, user.Email),
         };
+        
+        if (_jwtOptions.AdminEmails.Contains(user.Email))
+            claims.Add(new Claim(Roles.ClaimName, Roles.Admin));
             
         var now = DateTime.UtcNow;
         var jwt = new JwtSecurityToken(

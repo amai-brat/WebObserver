@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.Dashboard;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using WebObserver.Main.API;
 using WebObserver.Main.API.Helpers;
@@ -60,9 +61,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-app.MapHangfireDashboard("/hangfire", new DashboardOptions
+app.MapHangfireDashboard("/hangfire")
+    .RequireAuthorization(b =>
     {
-        Authorization = [new AnonymousAuthorizaiontFilter()]
+        b.RequireClaim(Roles.ClaimName, Roles.Admin);
     });
 
 app.Run();

@@ -19,7 +19,7 @@ public static class DependencyInjection
         });
         services.AddValidatorsFromAssembly(Assembly);
         
-        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IMessageFactory, MessageFactory>();
         
         services.AddScoped<IObservingFactory, TextObservingFactory>();

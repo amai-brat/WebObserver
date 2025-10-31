@@ -10,7 +10,7 @@ namespace WebObserver.Main.Application.Features.Auth.Commands.SignIn;
 
 public class SignInCommandHandler(
     IUserRepository userRepository,
-    ITokenService tokenService) : ICommandHandler<SignInCommand, TokenDto>
+    IJwtService jwtService) : ICommandHandler<SignInCommand, TokenDto>
 {
     public async Task<Result<TokenDto>> Handle(SignInCommand request, CancellationToken cancellationToken)
     {
@@ -27,7 +27,7 @@ public class SignInCommandHandler(
             return Result.Fail("Invalid password");
         }
         
-        var token = tokenService.GenerateToken(user);
+        var token = jwtService.GenerateToken(user);
         return Result.Ok(new TokenDto
         {
             AccessToken = token
