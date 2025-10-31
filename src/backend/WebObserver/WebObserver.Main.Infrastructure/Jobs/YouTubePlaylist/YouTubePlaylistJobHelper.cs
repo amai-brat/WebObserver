@@ -100,7 +100,8 @@ public class YouTubePlaylistJobHelper(
         
         // удаляю тех, которые стали заново доступны
         var toRemove = observing.UnavailableItems
-            .Where(item => unavailables.All(x => x.VideoId != item.CurrentItem.VideoId));
+            .Where(item => unavailables.All(x => x.VideoId != item.CurrentItem.VideoId))
+            .ToList();
         foreach (var item in toRemove)
         {
             observing.UnavailableItems.Remove(item);

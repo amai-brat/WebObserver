@@ -11,6 +11,7 @@ public static class DotEnv
         {
             var parts = line.Split(
                 '=',
+                count: 2,
                 StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length != 2)
