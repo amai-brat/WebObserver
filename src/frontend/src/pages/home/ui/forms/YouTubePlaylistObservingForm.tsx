@@ -5,6 +5,7 @@ import { alertError } from "../../../../shared/utils/alert";
 import { toast } from "react-toastify";
 import cronstrue from 'cronstrue/i18n';
 import axios from "axios";
+import { config } from "../../../../shared/utils/config";
 
 interface YouTubePlaylistObservingFormProps {
   template: ObservingTemplate;
@@ -12,7 +13,7 @@ interface YouTubePlaylistObservingFormProps {
 }
 
 export const YouTubePlaylistObservingForm: React.FC<YouTubePlaylistObservingFormProps> = ({ template, onSuccessSubmit }) => {
-  const availableCrons = ["* * * * *", "0 * * * *", "0 0 1 * *"];
+  const availableCrons = config.DEFAULT_CRONS;
 
   const validate = (values: YouTubePlaylistCreateObservingDto): FormikErrors<YouTubePlaylistCreateObservingDto> => {
     const errors: FormikErrors<YouTubePlaylistCreateObservingDto> = {};

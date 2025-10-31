@@ -3,5 +3,6 @@ export const ROUTES = {
     "HOME": "/home",
     "SIGNUP": "/signup", 
     "SIGNIN": "/signin", 
-    "OBSERVING": "/observings/:id"
+    "OBSERVING": "/observings/:id",
+    "HANGFIRE": "/hangfire"
 } as const;

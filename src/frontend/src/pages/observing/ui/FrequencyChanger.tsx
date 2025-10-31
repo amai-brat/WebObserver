@@ -4,13 +4,14 @@ import { observingApi, type EditObservingDto } from "../../../shared/api/observi
 import axios from "axios";
 import { alertError, alertSuccess } from "../../../shared/utils/alert";
 import cronstrue from 'cronstrue/i18n';
+import { config } from "../../../shared/utils/config";
 
 interface FrequencyChangerProps {
   observing: ObservingBase;
 }
 
 export const FrequencyChanger: React.FC<FrequencyChangerProps> = ({ observing }) => {
-  const availableCrons = ["* * * * *", "0 * * * *", "0 0 1 * *"];
+  const availableCrons = config.DEFAULT_CRONS;
 
   const initialValues: EditObservingDto = {
     cronExpression: observing.cronExpression

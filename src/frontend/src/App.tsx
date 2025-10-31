@@ -8,6 +8,7 @@ import { Toast } from './shared/ui/Toast/Toast'
 import { HomePage } from './pages/home/HomePage'
 import { ProtectedRoute } from './shared/ui/ProtectedRoute/ProtectedRoute'
 import { ObservingPage } from './pages/observing/ObservingPage'
+import { HangfirePage } from './pages/hangfire/HangfirePage'
 
 function App() {
   
@@ -23,6 +24,7 @@ function App() {
         <Route path={ROUTES.SIGNUP} element={<SignUpPage />}></Route>
         <Route path={ROUTES.SIGNIN} element={<SignInPage />}></Route>
         <Route path={ROUTES.OBSERVING} element={<ObservingPage />}></Route>
+        <Route path={ROUTES.HANGFIRE} element={<HangfirePage />}></Route>
       </Routes>
     </>
   )

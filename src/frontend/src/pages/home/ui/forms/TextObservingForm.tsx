@@ -4,6 +4,7 @@ import { observingApi, type TextCreateObservingDto } from "../../../../shared/ap
 import cronstrue from 'cronstrue/i18n';
 import { alertError, alertSuccess } from "../../../../shared/utils/alert";
 import axios from "axios";
+import { config } from "../../../../shared/utils/config";
 
 interface TextObservingFormProps {
   template: ObservingTemplate;
@@ -11,7 +12,7 @@ interface TextObservingFormProps {
 }
 
 export const TextObservingForm: React.FC<TextObservingFormProps> = ({ template, onSuccessSubmit }) => {
-  const availableCrons = ["* * * * *", "0 * * * *", "0 0 1 * *"];
+  const availableCrons = config.DEFAULT_CRONS;
 
   const validate = (values: TextCreateObservingDto): FormikErrors<TextCreateObservingDto> => {
     const errors: FormikErrors<TextCreateObservingDto> = {};

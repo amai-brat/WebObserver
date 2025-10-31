@@ -15,5 +15,8 @@ export const ENDPOINTS = {
   },
   "TEMPLATE": {
     "GET_ALL": "/api/templates"
+  },
+  "HANGFIRE": {
+    "DASHBOARD": "/api/hangfire"
   }
 } as const;
