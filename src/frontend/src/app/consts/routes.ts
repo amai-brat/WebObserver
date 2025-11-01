@@ -4,5 +4,5 @@ export const ROUTES = {
     "SIGNUP": "/signup", 
     "SIGNIN": "/signin", 
     "OBSERVING": "/observings/:id",
-    "HANGFIRE": "/hangfire"
+    "HANGFIRE": "/_hangfire"
 } as const;

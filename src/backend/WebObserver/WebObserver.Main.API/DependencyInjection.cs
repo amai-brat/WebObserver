@@ -2,7 +2,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebObserver.Main.API.Helpers;
 using WebObserver.Main.Application.Options;
+using WebObserver.Main.Domain.Base;
 
 namespace WebObserver.Main.API;
 
@@ -62,6 +64,7 @@ public static class DependencyInjection
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
+                    RoleClaimType = Roles.ClaimName,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
                 };
                 options.Events = new JwtBearerEvents
@@ -100,6 +103,18 @@ public static class DependencyInjection
                         return Task.CompletedTask;
                     },
                 };
+            });
+        
+        return services;
+    }
+    
+    public static IServiceCollection AddAuthorizationWithPolicy(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder()
+            .AddPolicy(Consts.HangfireDashboard, builder =>
+            {
+                builder.RequireAuthenticatedUser();
+                builder.RequireRole(Roles.Admin);
             });
         
         return services;

@@ -42,7 +42,7 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>() 
                                       ?? throw new InvalidOperationException("JwtOptions not configured"));
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationWithPolicy();
 
 var app = builder.Build();
 
@@ -51,7 +51,7 @@ await Migrator.MigrateAsync(app.Services);
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.All
 });
 
 if (app.Environment.IsDevelopment())
@@ -60,11 +60,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
-app.MapHangfireDashboard("/hangfire")
-    .RequireAuthorization(b =>
-    {
-        b.RequireClaim(Roles.ClaimName, Roles.Admin);
-    });
+app.MapHangfireDashboardWithAuthorizationPolicy(Consts.HangfireDashboard);
 
 app.Run();

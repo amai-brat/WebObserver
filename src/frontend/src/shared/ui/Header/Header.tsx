@@ -9,7 +9,8 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
 
   const navs = [
-    { link: ROUTES.HOME, name: "Главная" }
+    { link: ROUTES.HOME, name: "Главная" },
+    { link: ROUTES.HANGFIRE, name: "Hangfire" }
   ];
 
   const onLogoutClicked = async () => {

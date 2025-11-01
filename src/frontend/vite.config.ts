@@ -6,6 +6,11 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/',
+  build: {
+    rollupOptions: {
+      input: 'index.html'
+    }
+  },
   server: {
     host: '0.0.0.0',
     port: 5173,
